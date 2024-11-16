@@ -10,11 +10,34 @@
   let successMessage = "";
 
   onMount(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    token = urlParams.get("token");
+    try {
+      const hash = window.location.hash;
+      const params = new URLSearchParams(hash.split("?")[1]);
+      token = params.get("token");
+
+      console.log("Extracted token:", token);
+
+      if (!token) {
+        errorMessage = "Invalid or missing password reset link.";
+        push("/");
+      }
+    } catch (error) {
+      errorMessage = "An error occurred while parsing the reset link.";
+      push("/");
+    }
   });
 
   async function resetPassword() {
+    if (!newPassword || !confirmPassword) {
+      errorMessage = "Please fill in all fields.";
+      return;
+    }
+
+    if (newPassword.length < 8) {
+      errorMessage = "Password must be at least 8 characters long.";
+      return;
+    }
+
     if (newPassword !== confirmPassword) {
       errorMessage = "Passwords do not match.";
       return;
@@ -22,6 +45,9 @@
 
     try {
       loading = true;
+      errorMessage = "";
+      successMessage = "";
+
       const response = await fetch(
         "http://localhost:8080/auth/reset-password",
         {
@@ -111,3 +137,9 @@
     </p>
   </div>
 </div>
+
+<style>
+  .flex {
+    background-color: #f9fafb;
+  }
+</style>

@@ -7,6 +7,12 @@
   let successMessage = "";
 
   async function handleForgotPassword() {
+    if (!email || !email.includes("@")) {
+      errorMessage = "Please provide a valid email address.";
+      successMessage = "";
+      return;
+    }
+
     try {
       loading = true;
 
@@ -31,6 +37,7 @@
       }
     } catch (error) {
       errorMessage = "An error occurred. Please try again.";
+      successMessage = "";
     } finally {
       loading = false;
     }
