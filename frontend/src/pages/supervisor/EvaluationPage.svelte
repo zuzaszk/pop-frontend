@@ -5,13 +5,15 @@
   let projectId = null;
   let project = {};
   let members = [];
-  let evaluations = [];
-  let newComment = "";
-  let submitErrorMessage = "";
+  let selectedRating = 0;
+  let evaluationComment = "";
   let submitting = false;
   let loading = true;
   let error = "";
   let posterUrl = "";
+
+  const userId = 8;
+  const roleId = 3;
 
   function getLanguageName(languageCode) {
     return languageCode === 1
@@ -39,13 +41,12 @@
       );
       if (response.ok) {
         const data = await response.json();
-
         project = data;
         members =
           project.userRole?.filter(
             (member) => member.roles?.roleName === "student"
           ) || [];
-        evaluations = project.evaluations || [];
+
         fetchPoster(12);
       } else {
         error = "Failed to load project details.";
@@ -72,14 +73,12 @@
     }
   }
 
-  async function submitComment() {
-    if (!newComment.trim()) {
-      submitErrorMessage = "Please provide a comment.";
+  async function submitEvaluation() {
+    if (!evaluationComment.trim()) {
+      alert("Please provide a comment for your evaluation.");
       return;
     }
-
     submitting = true;
-    submitErrorMessage = "";
     try {
       const response = await fetch(
         `http://localhost:8080/zpi/evaluations/add`,
@@ -88,21 +87,25 @@
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             projectId: projectId,
-            comment: newComment,
+            userId: userId,
+            roleId: roleId,
+            score: selectedRating,
+            comment: evaluationComment,
             isPublic: 1,
           }),
         }
       );
 
       if (response.ok) {
-        newComment = "";
+        alert("Evaluation submitted successfully.");
+        evaluationComment = "";
+        selectedRating = 0;
         await fetchProjectDetails();
       } else {
-        const errorData = await response.json();
-        submitErrorMessage = errorData.message || "Failed to submit comment.";
+        console.error("Failed to submit evaluation");
       }
     } catch (err) {
-      submitErrorMessage = `An error occurred: ${err.message}`;
+      console.error(`Error submitting evaluation: ${err.message}`);
     } finally {
       submitting = false;
     }
@@ -127,7 +130,6 @@
           <h1 class="text-4xl font-bold text-[#2C3E50] mb-4">
             {project.title} ({project.acronym || "N/A"})
           </h1>
-
           <h2 class="text-xl font-bold text-[#2C3E50] mb-2">
             Project Description
           </h2>
@@ -179,41 +181,46 @@
         </div>
       </div>
 
-      <div class="mt-10">
-        <h2 class="text-2xl font-bold text-[#2C3E50] mb-4">Comments</h2>
+      <div class="bg-[#F5F5F5] p-6 rounded-lg shadow-inner mt-10">
+        <h2 class="text-2xl font-bold text-[#2C3E50] mb-4">
+          Provide Your Evaluation
+        </h2>
 
-        {#if submitErrorMessage}
-          <div class="bg-red-100 text-red-700 p-4 rounded-md mb-4">
-            {submitErrorMessage}
-          </div>
-        {/if}
-
-        {#if evaluations.length > 0}
-          {#each evaluations as evaluation}
-            <div class="bg-[#ECF0F1] p-4 rounded-lg mb-4">
-              <strong class="text-[#34495E] font-bold text-lg">Comment:</strong>
-              <p class="text-[#7F8C8D] font-medium">{evaluation.comment}</p>
-            </div>
+        <div class="flex items-center mb-6">
+          <p class="mr-4 font-semibold text-[#2C3E50]">Score:</p>
+          {#each [1, 2, 3, 4, 5] as star}
+            <span
+              on:click={() => (selectedRating = star)}
+              class="cursor-pointer mx-1"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill={star <= selectedRating ? "#F59E0B" : "#D1D5DB"}
+                class="w-8 h-8"
+              >
+                <path
+                  d="M12 17.75l-5.45 3.6 1.95-6.22-5.5-4h6.78L12 4.5l1.72 6.64h6.78l-5.5 4 1.95 6.22z"
+                />
+              </svg>
+            </span>
           {/each}
-        {:else}
-          <p>No comments available.</p>
-        {/if}
-
-        <div class="mt-6">
-          <h3 class="text-xl font-bold text-[#2C3E50] mb-4">Leave a Comment</h3>
-          <textarea
-            bind:value={newComment}
-            placeholder="Write your comment here..."
-            class="w-full h-24 p-3 border border-gray-300 rounded-lg mb-4 bg-white text-gray-800 font-semibold"
-          ></textarea>
-          <button
-            on:click={submitComment}
-            class="bg-[#E74C3E] text-white font-semibold py-3 px-6 rounded-lg hover:bg-[#C0392B]"
-            disabled={submitting}
-          >
-            {submitting ? "Submitting..." : "Submit Comment"}
-          </button>
         </div>
+
+        <textarea
+          bind:value={evaluationComment}
+          rows="4"
+          placeholder="Write your feedback here..."
+          class="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#E74C3C] text-[#2C3E50] placeholder-gray-400 bg-white resize-none mb-4"
+        ></textarea>
+
+        <button
+          on:click={submitEvaluation}
+          class="bg-[#E74C3C] text-white py-2 px-6 rounded-md font-semibold hover:bg-[#C0392B] transition duration-200"
+          disabled={submitting}
+        >
+          {submitting ? "Submitting..." : "Submit Evaluation"}
+        </button>
       </div>
     </div>
   </div>

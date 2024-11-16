@@ -11,7 +11,7 @@
   let hardDeadline = "";
 
   const projectId = get(currentProjectId);
-  const elementTypeId = 4;
+  const elementTypeId = 7;
 
   function onClose() {
     showModal = false;
@@ -20,6 +20,7 @@
 
   async function onUpload(event) {
     const file = event.detail.file;
+
     const formData = new FormData();
     formData.append("file", file);
     formData.append("projectId", projectId);
@@ -35,11 +36,11 @@
       );
 
       if (response.ok) {
-        console.log("File uploaded successfully for Poster");
+        console.log("File uploaded successfully for Roadmap");
         dispatch("upload", { success: true });
         showModal = false;
       } else {
-        console.error("Failed to upload file for Poster");
+        console.error("Failed to upload file");
       }
     } catch (error) {
       console.error("Error uploading file:", error);
@@ -51,6 +52,7 @@
       const response = await fetch(
         `http://localhost:8080/zpi/deadlines/getDeadlineByProjectIdAndElementTypeId?projectId=${projectId}&elementTypeId=${elementTypeId}`
       );
+
       if (response.ok) {
         const data = await response.json();
         softDeadline = data.softDeadline;
@@ -66,8 +68,8 @@
 
 {#if showModal}
   <ModalTemplate
-    title="Upload Poster"
-    description="Upload your poster (jpg, png)"
+    title="Upload Roadmap"
+    description="Upload your roadmap (jpg, png)"
     supportedFormats="jpg, png"
     {softDeadline}
     {hardDeadline}

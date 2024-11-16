@@ -11,7 +11,7 @@
   let hardDeadline = "";
 
   const projectId = get(currentProjectId);
-  const elementTypeId = 4;
+  const elementTypeId = 5;
 
   function onClose() {
     showModal = false;
@@ -35,11 +35,11 @@
       );
 
       if (response.ok) {
-        console.log("File uploaded successfully for Poster");
+        console.log("File uploaded successfully for Premise");
         dispatch("upload", { success: true });
         showModal = false;
       } else {
-        console.error("Failed to upload file for Poster");
+        console.error("Failed to upload file for Premise");
       }
     } catch (error) {
       console.error("Error uploading file:", error);
@@ -66,9 +66,9 @@
 
 {#if showModal}
   <ModalTemplate
-    title="Upload Poster"
-    description="Upload your poster (jpg, png)"
-    supportedFormats="jpg, png"
+    title="Upload Premise"
+    description="Upload your premise document (pdf, doc)"
+    supportedFormats="pdf, doc"
     {softDeadline}
     {hardDeadline}
     on:close={onClose}

@@ -1,31 +1,30 @@
 <script>
-  import { onMount } from 'svelte';
+  import { onMount } from "svelte";
 
   export let isEditMode = false;
   export let project = null;
 
-  // Mock data for testing
-  let projectName = 'Mock Project Name';
-  let description = 'Mock project description';
-  let shortDescription = 'Mock short description';
-  let year = '2024';
-  let language = 'EN';
+  let projectName = "Mock Project Name";
+  let description = "Mock project description";
+  let shortDescription = "Mock short description";
+  let year = "2024";
+  let language = "EN";
   let sourceCodeFile = null;
   let reportFile = null;
   let posterFile = null;
   let testCaseFile = null;
-  let posterPreviewUrl = '';
+  let posterPreviewUrl = "";
 
   function handleFileUpload(event, type) {
     const file = event.target.files[0];
-    if (type === 'poster') {
+    if (type === "poster") {
       posterFile = file;
-      posterPreviewUrl = file ? URL.createObjectURL(file) : '';
-    } else if (type === 'sourceCode') {
+      posterPreviewUrl = file ? URL.createObjectURL(file) : "";
+    } else if (type === "sourceCode") {
       sourceCodeFile = file;
-    } else if (type === 'report') {
+    } else if (type === "report") {
       reportFile = file;
-    } else if (type === 'testCase') {
+    } else if (type === "testCase") {
       testCaseFile = file;
     }
   }
@@ -47,57 +46,106 @@
   }
 </script>
 
-<div class="min-h-screen bg-[#F7F9F9] pt-24 pb-12 flex justify-center items-center">
+<div
+  class="min-h-screen bg-[#F7F9F9] pt-24 pb-12 flex justify-center items-center"
+>
   <div class="container max-w-3xl bg-white p-10 md:p-12 rounded-lg shadow-md">
     <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">
-      {isEditMode ? 'Edit Your Project' : 'Upload Your Final Project'}
+      {isEditMode ? "Edit Your Project" : "Upload Your Final Project"}
     </h2>
 
-    <!-- Mandatory Information Section -->
-    <h3 class="text-xl font-semibold text-gray-800 mb-4">Mandatory Information</h3>
+    <h3 class="text-xl font-semibold text-gray-800 mb-4">
+      Mandatory Information
+    </h3>
     <div class="grid grid-cols-2 gap-6 mb-8">
-      <!-- Description -->
-      <div class="upload-box" on:click={() => document.getElementById('description').focus()}>
-        <input id="description" type="text" bind:value={description} class="hidden" />
+      <div
+        class="upload-box"
+        on:click={() => document.getElementById("description").focus()}
+      >
+        <input
+          id="description"
+          type="text"
+          bind:value={description}
+          class="hidden"
+        />
         <label class="upload-label"><span>📝</span> Description</label>
       </div>
 
-      <!-- Short Description -->
-      <div class="upload-box" on:click={() => document.getElementById('shortDescription').focus()}>
-        <input id="shortDescription" type="text" bind:value={shortDescription} class="hidden" />
+      <div
+        class="upload-box"
+        on:click={() => document.getElementById("shortDescription").focus()}
+      >
+        <input
+          id="shortDescription"
+          type="text"
+          bind:value={shortDescription}
+          class="hidden"
+        />
         <label class="upload-label"><span>🔠</span> Short Description</label>
       </div>
 
-      <!-- Source Code -->
-      <div class="upload-box" on:click={() => document.getElementById('sourceCode').click()}>
-        <input id="sourceCode" type="file" accept=".zip,.rar" on:change={(e) => handleFileUpload(e, 'sourceCode')} class="hidden" />
+      <div
+        class="upload-box"
+        on:click={() => document.getElementById("sourceCode").click()}
+      >
+        <input
+          id="sourceCode"
+          type="file"
+          accept=".zip,.rar"
+          on:change={(e) => handleFileUpload(e, "sourceCode")}
+          class="hidden"
+        />
         <label class="upload-label"><span>🛠️</span> Source Code</label>
       </div>
 
-      <!-- Report -->
-      <div class="upload-box" on:click={() => document.getElementById('report').click()}>
-        <input id="report" type="file" accept=".pdf" on:change={(e) => handleFileUpload(e, 'report')} class="hidden" />
+      <div
+        class="upload-box"
+        on:click={() => document.getElementById("report").click()}
+      >
+        <input
+          id="report"
+          type="file"
+          accept=".pdf"
+          on:change={(e) => handleFileUpload(e, "report")}
+          class="hidden"
+        />
         <label class="upload-label"><span>📄</span> Report</label>
       </div>
     </div>
 
-    <!-- Optional Information Section -->
-    <h3 class="text-xl font-semibold text-gray-800 mb-4">Optional Information</h3>
+    <h3 class="text-xl font-semibold text-gray-800 mb-4">
+      Optional Information
+    </h3>
     <div class="grid grid-cols-2 gap-6 mb-8">
-      <!-- Poster -->
-      <div class="upload-box" on:click={() => document.getElementById('poster').click()}>
-        <input id="poster" type="file" accept="image/*" on:change={(e) => handleFileUpload(e, 'poster')} class="hidden" />
+      <div
+        class="upload-box"
+        on:click={() => document.getElementById("poster").click()}
+      >
+        <input
+          id="poster"
+          type="file"
+          accept="image/*"
+          on:change={(e) => handleFileUpload(e, "poster")}
+          class="hidden"
+        />
         <label class="upload-label"><span>🖼️</span> Poster</label>
       </div>
 
-      <!-- Test Case -->
-      <div class="upload-box" on:click={() => document.getElementById('testCase').click()}>
-        <input id="testCase" type="file" accept=".pdf,.zip" on:change={(e) => handleFileUpload(e, 'testCase')} class="hidden" />
+      <div
+        class="upload-box"
+        on:click={() => document.getElementById("testCase").click()}
+      >
+        <input
+          id="testCase"
+          type="file"
+          accept=".pdf,.zip"
+          on:change={(e) => handleFileUpload(e, "testCase")}
+          class="hidden"
+        />
         <label class="upload-label"><span>🎯</span> Test Case</label>
       </div>
     </div>
 
-    <!-- Submit Button -->
     <div class="mt-8 text-center">
       <button
         on:click={submitForm}
@@ -113,7 +161,7 @@
   .container {
     max-width: 800px;
   }
-  
+
   .upload-box {
     display: flex;
     align-items: center;
@@ -125,7 +173,7 @@
     position: relative;
     transition: background-color 0.3s;
   }
-  
+
   .upload-box:hover {
     background-color: #f5f5f5;
   }
@@ -140,11 +188,11 @@
     justify-content: center;
     gap: 8px;
   }
-  
+
   .upload-label span {
-    font-size: 1.5rem; /* Icon size */
+    font-size: 1.5rem;
   }
-  
+
   .submit-button {
     width: 100%;
   }

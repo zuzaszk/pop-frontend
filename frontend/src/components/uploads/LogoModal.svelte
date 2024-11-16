@@ -4,22 +4,21 @@
   import { get } from "svelte/store";
   import { createEventDispatcher, onMount } from "svelte";
 
-  let showModal = true;
   const dispatch = createEventDispatcher();
 
   let softDeadline = "";
   let hardDeadline = "";
 
   const projectId = get(currentProjectId);
-  const elementTypeId = 4;
+  const elementTypeId = 1;
 
   function onClose() {
-    showModal = false;
     dispatch("close");
   }
 
   async function onUpload(event) {
     const file = event.detail.file;
+
     const formData = new FormData();
     formData.append("file", file);
     formData.append("projectId", projectId);
@@ -35,11 +34,11 @@
       );
 
       if (response.ok) {
-        console.log("File uploaded successfully for Poster");
+        console.log("File uploaded successfully for Logo");
         dispatch("upload", { success: true });
-        showModal = false;
+        onClose();
       } else {
-        console.error("Failed to upload file for Poster");
+        console.error("Failed to upload file");
       }
     } catch (error) {
       console.error("Error uploading file:", error);
@@ -64,14 +63,12 @@
   });
 </script>
 
-{#if showModal}
-  <ModalTemplate
-    title="Upload Poster"
-    description="Upload your poster (jpg, png)"
-    supportedFormats="jpg, png"
-    {softDeadline}
-    {hardDeadline}
-    on:close={onClose}
-    on:upload={onUpload}
-  />
-{/if}
+<ModalTemplate
+  title="Upload Logo"
+  description="Upload your logo (jpg, png)"
+  supportedFormats="jpg, png"
+  {softDeadline}
+  {hardDeadline}
+  on:close={onClose}
+  on:upload={onUpload}
+/>

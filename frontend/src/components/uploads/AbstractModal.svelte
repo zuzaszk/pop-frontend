@@ -2,16 +2,10 @@
   import ModalTemplate from "./ModalTemplate.svelte";
   import { currentProjectId } from "../../projectStore";
   import { get } from "svelte/store";
-  import { createEventDispatcher, onMount } from "svelte";
+  import { createEventDispatcher } from "svelte";
 
   let showModal = true;
   const dispatch = createEventDispatcher();
-
-  let softDeadline = "";
-  let hardDeadline = "";
-
-  const projectId = get(currentProjectId);
-  const elementTypeId = 4;
 
   function onClose() {
     showModal = false;
@@ -20,6 +14,9 @@
 
   async function onUpload(event) {
     const file = event.detail.file;
+    const projectId = get(currentProjectId);
+    const elementTypeId = 8;
+
     const formData = new FormData();
     formData.append("file", file);
     formData.append("projectId", projectId);
@@ -35,42 +32,25 @@
       );
 
       if (response.ok) {
-        console.log("File uploaded successfully for Poster");
+        console.log("File uploaded successfully for Abstract");
         dispatch("upload", { success: true });
         showModal = false;
       } else {
-        console.error("Failed to upload file for Poster");
+        console.error("Failed to upload file");
       }
     } catch (error) {
       console.error("Error uploading file:", error);
     }
   }
-
-  onMount(async () => {
-    try {
-      const response = await fetch(
-        `http://localhost:8080/zpi/deadlines/getDeadlineByProjectIdAndElementTypeId?projectId=${projectId}&elementTypeId=${elementTypeId}`
-      );
-      if (response.ok) {
-        const data = await response.json();
-        softDeadline = data.softDeadline;
-        hardDeadline = data.hardDeadline;
-      } else {
-        console.error("Failed to fetch deadlines");
-      }
-    } catch (error) {
-      console.error("Error fetching deadlines:", error);
-    }
-  });
 </script>
 
 {#if showModal}
   <ModalTemplate
-    title="Upload Poster"
-    description="Upload your poster (jpg, png)"
-    supportedFormats="jpg, png"
-    {softDeadline}
-    {hardDeadline}
+    title="Upload Abstract"
+    description="Upload your abstract (pdf)"
+    supportedFormats="pdf"
+    softDeadline="2024-12-13"
+    hardDeadline="2025-01-13"
     on:close={onClose}
     on:upload={onUpload}
   />

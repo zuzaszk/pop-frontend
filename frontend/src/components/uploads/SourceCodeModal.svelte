@@ -1,55 +1,57 @@
 <script>
-  export let onClose;
-  export let onAdded;
-  let sourceCodeFile = null;
+  import ModalTemplate from "./ModalTemplate.svelte";
+  import { currentProjectId } from "../../projectStore";
+  import { get } from "svelte/store";
+  import { createEventDispatcher } from "svelte";
 
-  function handleFileChange(event) {
-    sourceCodeFile = event.target.files[0];
+  let showModal = true;
+  const dispatch = createEventDispatcher();
+
+  function onClose() {
+    showModal = false;
+    dispatch("close");
   }
 
-  function submitSourceCode() {
-    if (sourceCodeFile) {
-      onAdded();
-      onClose();
+  async function onUpload(event) {
+    const file = event.detail.file;
+    const projectId = get(currentProjectId);
+    const elementTypeId = 3;
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("projectId", projectId);
+    formData.append("elementTypeId", elementTypeId);
+
+    try {
+      const response = await fetch(
+        `http://localhost:8080/zpi/projectElements/uploadElement?projectId=${projectId}&elementTypeId=${elementTypeId}`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      if (response.ok) {
+        console.log("File uploaded successfully for Source Code");
+        dispatch("upload", { success: true });
+        showModal = false;
+      } else {
+        console.error("Failed to upload file for Source Code");
+      }
+    } catch (error) {
+      console.error("Error uploading file:", error);
     }
   }
 </script>
 
-<div class="modal">
-  <div class="modal-content">
-    <h3>Upload Source Code</h3>
-    <input type="file" accept=".zip,.rar" on:change={handleFileChange} />
-    <button on:click={submitSourceCode}>Upload</button>
-    <button on:click={onClose}>Cancel</button>
-  </div>
-</div>
-
-<style>
-  .modal {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  .modal-content {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    width: 400px;
-    max-width: 90%;
-  }
-  textarea {
-    width: 100%;
-    height: 100px;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #e0e0e0;
-    border-radius: 5px;
-  }
-  button {
-    margin: 5px;
-  }
-</style>
+{#if showModal}
+  <ModalTemplate
+    title="Upload Source Code"
+    description="Upload your source code (zip file)"
+    supportedFormats="zip"
+    softDeadline="2024-12-13"
+    hardDeadline="2025-01-13"
+    on:close={onClose}
+    on:upload={onUpload}
+  />
+{/if}

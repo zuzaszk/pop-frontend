@@ -74,40 +74,34 @@
 </style>
  -->
 
-
-
-
 <script>
-  import { onMount } from 'svelte';
-  import { push } from 'svelte-spa-router';
+  import { onMount } from "svelte";
+  import { push } from "svelte-spa-router";
 
   onMount(() => {
-    localStorage.removeItem('authToken');
-    
+    localStorage.removeItem("authToken");
+
     setTimeout(() => {
-      push('/');
-    }, 1000); 
+      push("/");
+    }, 1000);
   });
 </script>
-
 
 <div class="logout-container">
   <p>Logging out...</p>
 </div>
 
 <style>
-  
   .logout-container {
     display: flex;
     justify-content: center;
-    align-items: flex-end; 
-    min-height: 100vh; 
+    align-items: flex-end;
+    min-height: 100vh;
   }
-
 
   p {
     font-size: 18px;
     color: #2c3e50;
-    margin-bottom: 300px; 
+    margin-bottom: 300px;
   }
 </style>
