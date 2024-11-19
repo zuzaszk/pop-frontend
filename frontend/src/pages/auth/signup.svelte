@@ -1,5 +1,5 @@
 <script>
-  import SignupForm from "../components/SignupForm.svelte";
+  import SignupForm from "../../components/SignupForm.svelte";
   import { push } from "svelte-spa-router";
 
   let loading = false;
@@ -26,7 +26,7 @@
       loading = true;
       console.log("Sending data to API...");
 
-      const response = await fetch("http://localhost:8080/auth/register", {
+      const response = await fetch("http://192.168.0.102:8080/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

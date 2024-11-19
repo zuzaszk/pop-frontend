@@ -4,6 +4,13 @@
   let showMyProjectsDropdown = false;
   let showMobileMenu = false;
 
+  const dashboardRoutes = {
+    student: "#/student-dashboard",
+    supervisor: "#/supervisor-dashboard",
+    reviewer: "#/reviewer-dashboard",
+    chair: "#/chair-dashboard",
+  };
+
   function toggleDropdown(dropdown) {
     if (dropdown === "create") {
       showCreateDropdown = !showCreateDropdown;
@@ -24,7 +31,9 @@
     <img src="/logo.jpg" alt="Logo" class="logo h-10" />
 
     <nav class="nav hidden md:flex ml-auto space-x-4 items-center">
-      <a href="#/dashboard" class="nav-link">Dashboard</a>
+      <a href={dashboardRoutes[role] || "#/dashboard"} class="nav-link"
+        >Dashboard</a
+      >
       <a href="#/projects" class="nav-link">Projects</a>
 
       {#if role === "chair" || role === "supervisor"}
@@ -65,7 +74,6 @@
       {/if}
 
       {#if role === "supervisor"}
-        <a href="#/my-projects" class="nav-link">My Teams</a>
         <a href="#/evaluations" class="nav-link">Evaluations</a>
       {/if}
 
@@ -84,7 +92,9 @@
   {#if showMobileMenu}
     <div class="bg-[#2c3e50] md:hidden">
       <nav class="flex flex-col space-y-2 p-4">
-        <a href="#/dashboard" class="nav-link">Dashboard</a>
+        <a href={dashboardRoutes[role] || "#/dashboard"} class="nav-link"
+          >Dashboard</a
+        >
         <a href="#/projects" class="nav-link">Projects</a>
 
         {#if role === "chair" || role === "supervisor"}

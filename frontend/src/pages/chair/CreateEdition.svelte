@@ -25,16 +25,19 @@
     errorMessage = "";
 
     try {
-      const response = await fetch(`http://localhost:8080/zpi/edition/create`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: editionName,
-          year: parseInt(year),
-          semester: parseInt(semester),
-          isActive: isActive,
-        }),
-      });
+      const response = await fetch(
+        `http://192.168.0.102:8080/zpi/edition/create`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: editionName,
+            year: parseInt(year),
+            semester: parseInt(semester),
+            isActive: isActive,
+          }),
+        }
+      );
 
       if (response.ok) {
         console.log("Edition created successfully!");

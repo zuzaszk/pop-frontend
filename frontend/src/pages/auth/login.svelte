@@ -1,8 +1,8 @@
 <script>
   import { push } from "svelte-spa-router";
-  import LoginForm from "../components/LoginForm.svelte";
-  import SocialLogin from "../components/SocialLogin.svelte";
-  import UsosLogin from "../components/UsosLogin.svelte";
+  import LoginForm from "../../components/LoginForm.svelte";
+  import SocialLogin from "../../components/SocialLogin.svelte";
+  import UsosLogin from "../../components/UsosLogin.svelte";
 
   let email = "";
   let password = "";
@@ -18,7 +18,7 @@
     try {
       loading = true;
 
-      const response = await fetch("http://localhost:8080/auth/login", {
+      const response = await fetch("http://192.168.0.102:8080/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -27,6 +27,8 @@
       const data = await response.json();
 
       if (response.ok) {
+        sessionStorage.setItem("authToken", data.token);
+
         push("/dashboard");
       } else {
         errorMessage = data.message || "Login failed. Please try again.";
@@ -41,14 +43,15 @@
   function loginWithGoogle() {
     console.log(
       "Redirecting to:",
-      "http://localhost:8080/oauth2/authorization/google"
+      "http://192.168.0.102:8080/oauth2/authorization/google"
     );
-    window.location.href = "http://localhost:8080/oauth2/authorization/google";
+    window.location.href =
+      "http://192.168.0.102:8080/oauth2/authorization/google";
   }
 
   function loginWithFacebook() {
     window.location.href =
-      "http://localhost:8080/oauth2/authorization/facebook";
+      "http://192.168.0.102:8080/oauth2/authorization/facebook";
   }
 
   function handleUsosLogin() {
@@ -116,11 +119,17 @@
   }
 
   .scaleContainer .transform {
-    transform: scale(0.65);
+    transform: scale(0.7);
     transform-origin: center;
   }
 
   a {
     cursor: pointer;
+  }
+
+  @media (min-width: 1600px) {
+    .scaleContainer .transform {
+      transform: scale(1.1);
+    }
   }
 </style>

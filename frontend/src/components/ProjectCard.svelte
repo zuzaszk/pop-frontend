@@ -10,7 +10,7 @@
     <p class="acronym text-sm text-[#34495E] mb-2">
       Acronym: {project.acronym}
     </p>
-    <p class="description text-xs text-[#7F8C8D] mb-4">{project.description}</p>
+    <p class="description text-xs text-[#7F8C8D] mb-4">{project.overview}</p>
   </div>
   <button
     class="view-button bg-[#E74C3C] text-white p-2 rounded-lg hover:bg-[#C0392B] text-sm mx-auto block"
@@ -47,6 +47,12 @@
 
   .card-container:hover {
     transform: scale(1.03);
+  }
+  @media (min-width: 1440px) {
+    .card-container {
+      max-width: 500px;
+      padding: 1.25rem;
+    }
   }
 
   @media (max-width: 640px) {

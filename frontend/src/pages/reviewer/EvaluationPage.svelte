@@ -1,6 +1,6 @@
 <script>
   import { onMount } from "svelte";
-  import { loc } from "svelte-spa-router";
+  import { loc, push } from "svelte-spa-router";
 
   let projectId = null;
   let project = {};
@@ -37,7 +37,7 @@
 
     try {
       const response = await fetch(
-        `http://localhost:8080/zpi/project/basicInfo?projectId=${projectId}`
+        `http://192.168.0.102:8080/zpi/project/basicInfo?projectId=${projectId}`
       );
       if (response.ok) {
         const data = await response.json();
@@ -61,7 +61,7 @@
   async function fetchPoster(projectElementId) {
     try {
       const response = await fetch(
-        `http://localhost:8080/zpi/projectElements/retrieve?projectElementId=${projectElementId}`
+        `http://192.168.0.102:8080/zpi/projectElements/retrieve?projectElementId=${projectElementId}`
       );
       if (response.ok) {
         posterUrl = response.url;
@@ -81,7 +81,7 @@
     submitting = true;
     try {
       const response = await fetch(
-        `http://localhost:8080/zpi/evaluations/add`,
+        `http://192.168.0.102:8080/zpi/evaluations/add`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -220,6 +220,12 @@
           disabled={submitting}
         >
           {submitting ? "Submitting..." : "Submit Evaluation"}
+        </button>
+        <button
+          on:click={() => push(`/files/${projectId}`)}
+          class="bg-[#E74C3E] text-white font-semibold py-2 px-4 rounded-lg hover:bg-[#C0392B] mt-4"
+        >
+          View Files Uploaded
         </button>
       </div>
     </div>

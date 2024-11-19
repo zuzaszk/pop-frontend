@@ -26,7 +26,7 @@
 
     try {
       const response = await fetch(
-        `http://localhost:8080/zpi/projectElements/uploadElement?projectId=${projectId}&elementTypeId=${elementTypeId}`,
+        `http://192.168.0.102:8080/zpi/projectElements/uploadElement`,
         {
           method: "POST",
           body: formData,
@@ -48,12 +48,13 @@
   onMount(async () => {
     try {
       const response = await fetch(
-        `http://localhost:8080/zpi/deadlines/getDeadlineByProjectIdAndElementTypeId?projectId=${projectId}&elementTypeId=${elementTypeId}`
+        `http://192.168.0.102:8080/zpi/deadlines/getDeadlineByProjectIdAndElementTypeId?projectId=${projectId}&elementTypeId=${elementTypeId}`
       );
+
       if (response.ok) {
         const data = await response.json();
-        softDeadline = data.softDeadline;
-        hardDeadline = data.hardDeadline;
+        softDeadline = data.softDeadline || "No deadline available";
+        hardDeadline = data.hardDeadline || "No deadline available";
       } else {
         console.error("Failed to fetch deadlines");
       }
