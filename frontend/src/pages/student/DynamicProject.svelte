@@ -477,11 +477,11 @@
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    padding: 1rem;
+    padding: 8rem;
   }
 
   .container {
-    max-width: 800px;
+    max-width: 1000px;
     background: white;
     padding: 2rem;
     border-radius: 12px;
@@ -532,9 +532,9 @@
   @media (min-width: 1600px) {
     .container {
       max-width: 1400px;
-      padding: 4rem;
-      margin-top: 100px;
-      min-height: 80vh;
+      padding: 2rem;
+      /* margin-top: 100px; */
+      /* min-height: 80vh; */
       display: flex;
       flex-direction: column;
       justify-content: center;

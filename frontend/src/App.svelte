@@ -6,7 +6,7 @@
   import { onMount } from "svelte";
 
   let currentPath = "";
-  let role = "student";
+  let role = "supervisor";
 
   $: currentPath = $location;
 </script>

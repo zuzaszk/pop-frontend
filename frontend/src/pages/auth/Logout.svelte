@@ -11,7 +11,7 @@
       loading = true;
 
 
-      const response = await fetch('http://192.168.0.102:8080/logout', {
+      const response = await fetch('http://192.168.0.107:8080/logout', {
         method: 'POST',
         credentials: 'include', 
       });

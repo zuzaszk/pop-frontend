@@ -26,7 +26,7 @@
       loading = true;
       console.log("Sending data to API...");
 
-      const response = await fetch("http://192.168.0.102:8080/auth/register", {
+      const response = await fetch("http://192.168.0.107:8080/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

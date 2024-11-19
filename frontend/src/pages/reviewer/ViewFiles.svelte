@@ -35,7 +35,7 @@
   async function fetchProjectElements() {
     try {
       const response = await fetch(
-        `http://192.168.0.102:8080/zpi/project/basicInfo?projectId=${projectId}`
+        `http://192.168.0.107:8080/zpi/project/basicInfo?projectId=${projectId}`
       );
       if (response.ok) {
         const data = await response.json();
@@ -68,7 +68,7 @@
     submittingComment = true;
     try {
       const response = await fetch(
-        `http://192.168.0.102:8080/zpi/comments/add`,
+        `http://192.168.0.107:8080/zpi/comments/add`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -141,7 +141,7 @@
                 {element.vfilePath.split("/").pop()}
               </p>
               <a
-                href={`http://192.168.0.102:8080/zpi/projectElements/retrieve?projectElementId=${element.elementId}`}
+                href={`http://192.168.0.107:8080/zpi/projectElements/retrieve?projectElementId=${element.elementId}`}
                 target="_blank"
                 download
                 class="block mb-4 text-sm text-gray-600 hover:text-gray-800 font-medium"
