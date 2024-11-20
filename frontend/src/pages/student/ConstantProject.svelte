@@ -29,7 +29,7 @@
 
     try {
       const response = await fetch(
-        `http://192.168.0.107:8080/zpi/project/basicInfo?projectId=${projectId}`
+        `http://192.168.0.102:8080/zpi/project/basicInfo?projectId=${projectId}`
       );
       if (response.ok) {
         const data = await response.json();
@@ -77,7 +77,7 @@
 
     try {
       const response = await fetch(
-        "http://192.168.0.107:8080/zpi/project/saveBasicInfo",
+        "http://192.168.0.102:8080/zpi/project/saveBasicInfo",
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },

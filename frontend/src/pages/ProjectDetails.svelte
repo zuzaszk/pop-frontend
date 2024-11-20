@@ -50,7 +50,7 @@
 
     try {
       const response = await fetch(
-        `http://192.168.0.107:8080/zpi/project/basicInfo?projectId=${projectId}`
+        `http://192.168.0.102:8080/zpi/project/basicInfo?projectId=${projectId}`
       );
       if (response.ok) {
         const data = await response.json();
@@ -79,7 +79,7 @@
   async function fetchUserRating() {
     try {
       const response = await fetch(
-        `http://192.168.0.107:8080/zpi/evaluations/getEvaluation?projectId=${projectId}&userId=${userId}&roleId=${roleId}`
+        `http://192.168.0.102:8080/zpi/evaluations/getEvaluation?projectId=${projectId}&userId=${userId}&roleId=${roleId}`
       );
       if (response.ok) {
         const data = await response.json();
@@ -104,7 +104,7 @@
   async function fetchPoster(projectElementId) {
     try {
       const response = await fetch(
-        `http://192.168.0.107:8080/zpi/projectElements/retrieve?projectElementId=${projectElementId}`
+        `http://192.168.0.102:8080/zpi/projectElements/retrieve?projectElementId=${projectElementId}`
       );
       if (response.ok) {
         posterUrl = response.url;
@@ -117,6 +117,7 @@
   async function submitComment() {
     if (!newComment.trim()) {
       submitCommentErrorMessage = "Please provide a comment.";
+      alert(submitCommentErrorMessage);
       return;
     }
 
@@ -134,7 +135,7 @@
 
     try {
       const response = await fetch(
-        `http://192.168.0.107:8080/zpi/reviews/add`,
+        `http://192.168.0.102:8080/zpi/reviews/add`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -144,15 +145,18 @@
 
       if (response.ok) {
         submitCommentSuccessMessage = "Comment submitted successfully!";
+        alert(submitCommentSuccessMessage);
         newComment = "";
         await fetchProjectDetails();
       } else {
         const result = await response.json();
         submitCommentErrorMessage =
           result.message || "Failed to submit the comment.";
+        alert(submitCommentErrorMessage);
       }
     } catch (err) {
       submitCommentErrorMessage = `Error: ${err.message}`;
+      alert(submitCommentErrorMessage);
     } finally {
       submittingComment = false;
       clearMessage("submitCommentSuccessMessage");
@@ -162,6 +166,7 @@
   async function submitRating() {
     if (userScore === 0) {
       submitRatingErrorMessage = "Please select a rating.";
+      alert(submitRatingErrorMessage);
       return;
     }
 
@@ -174,8 +179,8 @@
       : { projectId, userId, roleId, score: userScore };
 
     const apiUrl = existingRating
-      ? "http://192.168.0.107:8080/zpi/evaluations/update"
-      : "http://192.168.0.107:8080/zpi/evaluations/add";
+      ? "http://192.168.0.102:8080/zpi/evaluations/update"
+      : "http://192.168.0.102:8080/zpi/evaluations/add";
 
     const method = existingRating ? "PUT" : "POST";
 
@@ -190,15 +195,18 @@
         submitRatingSuccessMessage = existingRating
           ? "Rating updated successfully!"
           : "Rating submitted successfully!";
+        alert(submitRatingSuccessMessage);
         existingRating = { ...existingRating, score: userScore };
         await fetchProjectDetails();
       } else {
         const result = await response.json();
         submitRatingErrorMessage =
           result.message || "Failed to submit the rating.";
+        alert(submitRatingErrorMessage);
       }
     } catch (err) {
       submitRatingErrorMessage = `Error: ${err.message}`;
+      alert(submitRatingErrorMessage);
     } finally {
       submittingRating = false;
       showRatingModal = false;
@@ -248,6 +256,10 @@
           <h1 class="text-4xl font-bold text-[#2C3E50] mb-4">
             {project.title} ({project.acronym || "N/A"})
           </h1>
+          <h2 class="text-xl font-bold text-[#2C3E50] mb-2">Overview</h2>
+          <p class="text-lg text-[#7F8C8D] mb-6">
+            {project.overview || "No overview available."}
+          </p>
           <h2 class="text-xl font-bold text-[#2C3E50] mb-2">
             Project Description
           </h2>
@@ -445,7 +457,7 @@
     margin-bottom: 2rem;
   }
 
-  @media (min-width: 1440px) {
+  @media (min-width: 1600px) {
     .container {
       max-width: 2000px;
     }
@@ -468,6 +480,7 @@
     }
   }
 </style> -->
+
 <script>
   import { onMount } from "svelte";
   import { loc, push } from "svelte-spa-router";
@@ -497,6 +510,7 @@
 
   const userId = 8;
   const roleId = 3;
+  const evaluationRoleId = 1;
 
   $: loc.subscribe(($loc) => {
     const pathParts = $loc.location.split("/");
@@ -520,7 +534,7 @@
 
     try {
       const response = await fetch(
-        `http://192.168.0.107:8080/zpi/project/basicInfo?projectId=${projectId}`
+        `http://192.168.0.102:8080/zpi/project/basicInfo?projectId=${projectId}`
       );
       if (response.ok) {
         const data = await response.json();
@@ -549,7 +563,7 @@
   async function fetchUserRating() {
     try {
       const response = await fetch(
-        `http://192.168.0.107:8080/zpi/evaluations/getEvaluation?projectId=${projectId}&userId=${userId}&roleId=${roleId}`
+        `http://192.168.0.102:8080/zpi/evaluations/getEvaluation?projectId=${projectId}&userId=${userId}&evaluationRoleId=${evaluationRoleId}`
       );
       if (response.ok) {
         const data = await response.json();
@@ -574,7 +588,7 @@
   async function fetchPoster(projectElementId) {
     try {
       const response = await fetch(
-        `http://192.168.0.107:8080/zpi/projectElements/retrieve?projectElementId=${projectElementId}`
+        `http://192.168.0.102:8080/zpi/projectElements/retrieve?projectElementId=${projectElementId}`
       );
       if (response.ok) {
         posterUrl = response.url;
@@ -587,6 +601,7 @@
   async function submitComment() {
     if (!newComment.trim()) {
       submitCommentErrorMessage = "Please provide a comment.";
+      alert(submitCommentErrorMessage);
       return;
     }
 
@@ -604,7 +619,7 @@
 
     try {
       const response = await fetch(
-        `http://192.168.0.107:8080/zpi/reviews/add`,
+        `http://192.168.0.102:8080/zpi/reviews/add`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -614,15 +629,18 @@
 
       if (response.ok) {
         submitCommentSuccessMessage = "Comment submitted successfully!";
+        alert(submitCommentSuccessMessage);
         newComment = "";
         await fetchProjectDetails();
       } else {
         const result = await response.json();
         submitCommentErrorMessage =
           result.message || "Failed to submit the comment.";
+        alert(submitCommentErrorMessage);
       }
     } catch (err) {
       submitCommentErrorMessage = `Error: ${err.message}`;
+      alert(submitCommentErrorMessage);
     } finally {
       submittingComment = false;
       clearMessage("submitCommentSuccessMessage");
@@ -632,6 +650,7 @@
   async function submitRating() {
     if (userScore === 0) {
       submitRatingErrorMessage = "Please select a rating.";
+      alert(submitRatingErrorMessage);
       return;
     }
 
@@ -641,11 +660,11 @@
 
     const payload = existingRating
       ? { evaluationId: existingRating.evaluationId, score: userScore }
-      : { projectId, userId, roleId, score: userScore };
+      : { projectId, userId, evaluationRoleId, score: userScore };
 
     const apiUrl = existingRating
-      ? "http://192.168.0.107:8080/zpi/evaluations/update"
-      : "http://192.168.0.107:8080/zpi/evaluations/add";
+      ? "http://192.168.0.102:8080/zpi/evaluations/update"
+      : "http://192.168.0.102:8080/zpi/evaluations/add";
 
     const method = existingRating ? "PUT" : "POST";
 
@@ -660,15 +679,18 @@
         submitRatingSuccessMessage = existingRating
           ? "Rating updated successfully!"
           : "Rating submitted successfully!";
+        alert(submitRatingSuccessMessage);
         existingRating = { ...existingRating, score: userScore };
         await fetchProjectDetails();
       } else {
         const result = await response.json();
         submitRatingErrorMessage =
           result.message || "Failed to submit the rating.";
+        alert(submitRatingErrorMessage);
       }
     } catch (err) {
       submitRatingErrorMessage = `Error: ${err.message}`;
+      alert(submitRatingErrorMessage);
     } finally {
       submittingRating = false;
       showRatingModal = false;
@@ -722,19 +744,9 @@
           <p class="text-lg text-[#7F8C8D] mb-6">
             {project.overview || "No overview available."}
           </p>
-          <h2 class="text-xl font-bold text-[#2C3E50] mb-2">
-            Project Description
-          </h2>
-          <p class="text-lg text-[#7F8C8D] mb-6">
-            {project.description || "No description available."}
-          </p>
           <h3 class="text-lg font-bold text-[#2C3E50]">Language:</h3>
           <p class="text-[#7F8C8D] font-medium mb-6">
             {getLanguageName(project.language)}
-          </p>
-          <h3 class="text-lg font-bold text-[#2C3E50]">Technologies Used:</h3>
-          <p class="text-[#7F8C8D] font-medium mb-6">
-            {project.keywords || "Not specified"}
           </p>
           <div class="bg-[#ECF0F1] p-4 rounded-lg mb-6">
             <h3 class="text-lg font-bold text-[#2C3E50] mb-4">Team Members</h3>
@@ -750,6 +762,7 @@
             </div>
           </div>
         </div>
+
         <div class="lg:w-1/3 lg:pl-6 flex justify-center lg:justify-end">
           {#if posterUrl}
             <img src={posterUrl} alt="Project Poster" class="poster-image" />

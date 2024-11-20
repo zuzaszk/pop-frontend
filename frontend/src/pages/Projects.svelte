@@ -33,7 +33,7 @@
       const queryString = queryParams.length ? `?${queryParams.join("&")}` : "";
 
       const response = await fetch(
-        `http://192.168.0.107:8080/zpi/project/listAll${queryString}`
+        `http://192.168.0.102:8080/zpi/project/listAll${queryString}`
       );
 
       if (response.ok) {
@@ -232,7 +232,7 @@
   let totalPages = 1;
   let error = "";
   let viewMode = "grid";
-  let itemsPerPage = 8; // Default value.
+  let itemsPerPage = 8;
 
   async function fetchProjects() {
     try {
@@ -251,12 +251,12 @@
       const queryString = queryParams.length ? `?${queryParams.join("&")}` : "";
 
       const response = await fetch(
-        `http://192.168.0.107:8080/zpi/project/listAll${queryString}`
+        `http://192.168.0.102:8080/zpi/project/listAll${queryString}`
       );
 
       if (response.ok) {
         allProjects = await response.json();
-        calculateItemsPerPage(); // Adjust items per page based on screen width.
+        calculateItemsPerPage();
         totalPages = Math.ceil(allProjects.length / itemsPerPage);
         currentPage = 1;
         updateDisplayedProjects();
@@ -271,9 +271,9 @@
 
   function calculateItemsPerPage() {
     if (window.innerWidth >= 1600) {
-      itemsPerPage = 16; // Limit to 16 for large screens.
+      itemsPerPage = 16;
     } else {
-      itemsPerPage = 8; // Default value for smaller screens.
+      itemsPerPage = 8;
     }
   }
 
@@ -302,7 +302,6 @@
     viewMode = mode;
   }
 
-  // Recalculate itemsPerPage on window resize.
   function handleResize() {
     calculateItemsPerPage();
     totalPages = Math.ceil(allProjects.length / itemsPerPage);
@@ -311,8 +310,8 @@
 
   onMount(() => {
     fetchProjects();
-    window.addEventListener("resize", handleResize); // Add resize event listener.
-    return () => window.removeEventListener("resize", handleResize); // Clean up listener.
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   });
 </script>
 

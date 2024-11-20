@@ -563,17 +563,36 @@
 
   @media (max-width: 768px) {
     .page-container {
-      padding-top: 5rem;
-      padding-bottom: 1rem;
+      padding: 6rem 1rem 2rem;
+      align-items: flex-start;
+    }
+
+    .container {
+      max-width: 100%;
+      padding: 1rem;
+      box-shadow: none;
     }
 
     .upload-grid {
       grid-template-columns: repeat(2, 1fr);
       gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .upload-item {
+      padding: 1rem;
+      height: auto;
+    }
+
+    .icon {
+      width: 28px;
+      height: 28px;
     }
 
     .submit-button {
       margin-top: 2rem;
+      padding: 1rem;
+      font-size: 1rem;
     }
   }
 </style>
