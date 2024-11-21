@@ -24,7 +24,7 @@
 
     try {
       const response = await fetch(
-        `http://192.168.0.102:8080/zpi/projectElements/uploadElement?projectId=${projectId}&elementTypeId=${elementTypeId}`,
+        `http://localhost:8080/zpi/projectElements/uploadElement?projectId=${projectId}&elementTypeId=${elementTypeId}`,
         {
           method: "POST",
           body: formData,
@@ -84,7 +84,7 @@
 
     try {
       const response = await fetch(
-        `http://192.168.0.102:8080/zpi/projectElements/uploadElement`,
+        `http://localhost:8080/zpi/projectElements/uploadElement`,
         {
           method: "POST",
           body: formData,
@@ -106,7 +106,7 @@
   onMount(async () => {
     try {
       const response = await fetch(
-        `http://192.168.0.102:8080/zpi/deadlines/getDeadlineByProjectIdAndElementTypeId?projectId=${projectId}&elementTypeId=${elementTypeId}`
+        `http://localhost:8080/zpi/deadlines/getDeadlineByProjectIdAndElementTypeId?projectId=${projectId}&elementTypeId=${elementTypeId}`
       );
 
       if (response.ok) {

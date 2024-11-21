@@ -37,7 +37,7 @@
 
     try {
       const response = await fetch(
-        `http://192.168.0.102:8080/zpi/project/basicInfo?projectId=${projectId}`
+        `http://localhost:8080/zpi/project/basicInfo?projectId=${projectId}`
       );
       if (response.ok) {
         const data = await response.json();
@@ -61,7 +61,7 @@
   async function fetchPoster(projectElementId) {
     try {
       const response = await fetch(
-        `http://192.168.0.102:8080/zpi/projectElements/retrieve?projectElementId=${projectElementId}`
+        `http://localhost:8080/zpi/projectElements/retrieve?projectElementId=${projectElementId}`
       );
       if (response.ok) {
         posterUrl = response.url;
@@ -81,7 +81,7 @@
     submitting = true;
     try {
       const response = await fetch(
-        `http://192.168.0.102:8080/zpi/evaluations/add`,
+        `http://localhost:8080/zpi/evaluations/add`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -306,7 +306,7 @@
 
     try {
       const response = await fetch(
-        `http://192.168.0.102:8080/zpi/project/basicInfo?projectId=${projectId}`
+        `http://localhost:8080/zpi/project/basicInfo?projectId=${projectId}`
       );
       if (response.ok) {
         const data = await response.json();
@@ -330,7 +330,7 @@
   async function fetchPoster(projectElementId) {
     try {
       const response = await fetch(
-        `http://192.168.0.102:8080/zpi/projectElements/retrieve?projectElementId=${projectElementId}`
+        `http://localhost:8080/zpi/projectElements/retrieve?projectElementId=${projectElementId}`
       );
       if (response.ok) {
         posterUrl = response.url;
@@ -345,7 +345,7 @@
   async function fetchUserRating() {
     try {
       const response = await fetch(
-        `http://192.168.0.102:8080/zpi/evaluations/getEvaluation?projectId=${projectId}&userId=${userId}&evaluationRoleId=${evaluationRoleId}`
+        `http://localhost:8080/zpi/evaluations/getEvaluation?projectId=${projectId}&userId=${userId}&evaluationRoleId=${evaluationRoleId}`
       );
       if (response.ok) {
         const data = await response.json();
@@ -375,7 +375,7 @@
     submitting = true;
     try {
       const response = await fetch(
-        `http://192.168.0.102:8080/zpi/evaluations/add`,
+        `http://localhost:8080/zpi/evaluations/add`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -583,7 +583,7 @@
 
     try {
       const response = await fetch(
-        `http://192.168.0.102:8080/zpi/project/basicInfo?projectId=${projectId}`
+        `http://localhost:8080/zpi/project/basicInfo?projectId=${projectId}`
       );
       if (response.ok) {
         const data = await response.json();
@@ -606,7 +606,7 @@
   async function fetchPoster(projectElementId) {
     try {
       const response = await fetch(
-        `http://192.168.0.102:8080/zpi/projectElements/retrieve?projectElementId=${projectElementId}`
+        `http://localhost:8080/zpi/projectElements/retrieve?projectElementId=${projectElementId}`
       );
       if (response.ok) {
         posterUrl = response.url;
@@ -621,7 +621,7 @@
   async function fetchUserRating() {
     try {
       const response = await fetch(
-        `http://192.168.0.102:8080/zpi/evaluations/getEvaluation?projectId=${projectId}&userId=${userId}&evaluationRoleId=${evaluationRoleId}`
+        `http://localhost:8080/zpi/evaluations/getEvaluation?projectId=${projectId}&userId=${userId}&evaluationRoleId=${evaluationRoleId}`
       );
       if (response.ok) {
         const data = await response.json();
@@ -651,7 +651,7 @@
     submitting = true;
     try {
       const response = await fetch(
-        `http://192.168.0.102:8080/zpi/evaluations/add`,
+        `http://localhost:8080/zpi/evaluations/add`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

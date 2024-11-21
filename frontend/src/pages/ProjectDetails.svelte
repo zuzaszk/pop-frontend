@@ -50,7 +50,7 @@
 
     try {
       const response = await fetch(
-        `http://192.168.0.102:8080/zpi/project/basicInfo?projectId=${projectId}`
+        `http://localhost:8080/zpi/project/basicInfo?projectId=${projectId}`
       );
       if (response.ok) {
         const data = await response.json();
@@ -79,7 +79,7 @@
   async function fetchUserRating() {
     try {
       const response = await fetch(
-        `http://192.168.0.102:8080/zpi/evaluations/getEvaluation?projectId=${projectId}&userId=${userId}&roleId=${roleId}`
+        `http://localhost:8080/zpi/evaluations/getEvaluation?projectId=${projectId}&userId=${userId}&roleId=${roleId}`
       );
       if (response.ok) {
         const data = await response.json();
@@ -104,7 +104,7 @@
   async function fetchPoster(projectElementId) {
     try {
       const response = await fetch(
-        `http://192.168.0.102:8080/zpi/projectElements/retrieve?projectElementId=${projectElementId}`
+        `http://localhost:8080/zpi/projectElements/retrieve?projectElementId=${projectElementId}`
       );
       if (response.ok) {
         posterUrl = response.url;
@@ -135,7 +135,7 @@
 
     try {
       const response = await fetch(
-        `http://192.168.0.102:8080/zpi/reviews/add`,
+        `http://localhost:8080/zpi/reviews/add`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -179,8 +179,8 @@
       : { projectId, userId, roleId, score: userScore };
 
     const apiUrl = existingRating
-      ? "http://192.168.0.102:8080/zpi/evaluations/update"
-      : "http://192.168.0.102:8080/zpi/evaluations/add";
+      ? "http://localhost:8080/zpi/evaluations/update"
+      : "http://localhost:8080/zpi/evaluations/add";
 
     const method = existingRating ? "PUT" : "POST";
 
@@ -521,8 +521,8 @@
     return languageCode === 1
       ? "English"
       : languageCode === 2
-        ? "Polish"
-        : "Unknown";
+      ? "Polish"
+      : "Unknown";
   }
 
   async function fetchProjectDetails() {
@@ -534,7 +534,7 @@
 
     try {
       const response = await fetch(
-        `http://192.168.0.102:8080/zpi/project/basicInfo?projectId=${projectId}`
+        `http://localhost:8080/zpi/project/basicInfo?projectId=${projectId}`
       );
       if (response.ok) {
         const data = await response.json();
@@ -563,7 +563,7 @@
   async function fetchUserRating() {
     try {
       const response = await fetch(
-        `http://192.168.0.102:8080/zpi/evaluations/getEvaluation?projectId=${projectId}&userId=${userId}&evaluationRoleId=${evaluationRoleId}`
+        `http://localhost:8080/zpi/evaluations/getEvaluation?projectId=${projectId}&userId=${userId}&evaluationRoleId=${evaluationRoleId}`
       );
       if (response.ok) {
         const data = await response.json();
@@ -588,7 +588,7 @@
   async function fetchPoster(projectElementId) {
     try {
       const response = await fetch(
-        `http://192.168.0.102:8080/zpi/projectElements/retrieve?projectElementId=${projectElementId}`
+        `http://localhost:8080/zpi/projectElements/retrieve?projectElementId=${projectElementId}`
       );
       if (response.ok) {
         posterUrl = response.url;
@@ -619,7 +619,7 @@
 
     try {
       const response = await fetch(
-        `http://192.168.0.102:8080/zpi/reviews/add`,
+        `http://localhost:8080/zpi/reviews/add`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -663,8 +663,8 @@
       : { projectId, userId, evaluationRoleId, score: userScore };
 
     const apiUrl = existingRating
-      ? "http://192.168.0.102:8080/zpi/evaluations/update"
-      : "http://192.168.0.102:8080/zpi/evaluations/add";
+      ? "http://localhost:8080/zpi/evaluations/update"
+      : "http://localhost:8080/zpi/evaluations/add";
 
     const method = existingRating ? "PUT" : "POST";
 
@@ -744,6 +744,10 @@
           <p class="text-lg text-[#7F8C8D] mb-6">
             {project.overview || "No overview available."}
           </p>
+          <h2 class="text-xl font-bold text-[#2C3E50] mb-2">Description</h2>
+          <p class="text-lg text-[#7F8C8D] mb-6">
+            {project.description || "No description available."}
+          </p>
           <h3 class="text-lg font-bold text-[#2C3E50]">Language:</h3>
           <p class="text-[#7F8C8D] font-medium mb-6">
             {getLanguageName(project.language)}
@@ -770,6 +774,7 @@
         </div>
       </div>
 
+      <!-- Comments Section -->
       <div class="mt-10">
         <div class="flex justify-between items-center">
           <h2 class="text-2xl font-bold text-[#2C3E50] mb-4">Comments</h2>
@@ -855,6 +860,7 @@
     </div>
   </div>
 
+  <!-- Rating Modal -->
   {#if showRatingModal}
     <div
       class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
@@ -888,8 +894,8 @@
           {submittingRating
             ? "Submitting..."
             : existingRating
-              ? "Update Rating"
-              : "Submit Rating"}
+            ? "Update Rating"
+            : "Submit Rating"}
         </button>
         <button
           on:click={() => (showRatingModal = false)}

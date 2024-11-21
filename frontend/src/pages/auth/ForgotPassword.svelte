@@ -17,7 +17,7 @@
       loading = true;
 
       const response = await fetch(
-        "http://192.168.0.102:8080/auth/forgot-password",
+        "http://localhost:8080/auth/forgot-password",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

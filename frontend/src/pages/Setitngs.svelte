@@ -12,7 +12,7 @@
     const token = sessionStorage.getItem("authToken");
 
     try {
-      const response = await fetch(`http://192.168.0.102:8080/user/roles`, {
+      const response = await fetch(`http://localhost:8080/user/roles`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -20,7 +20,7 @@
         roles = await response.json();
 
         const currentRoleResponse = await fetch(
-          `http://192.168.0.102:8080/user/currentRole`,
+          `http://localhost:8080/user/currentRole`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -51,7 +51,7 @@
 
     try {
       const response = await fetch(
-        `http://192.168.0.102:8080/user/switchRole?roleId=${selectedRoleId}`,
+        `http://localhost:8080/user/switchRole?roleId=${selectedRoleId}`,
         {
           method: "POST",
           headers: { Authorization: `Bearer ${token}` },
