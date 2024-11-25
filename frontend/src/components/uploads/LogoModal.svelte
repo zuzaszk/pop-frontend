@@ -10,7 +10,7 @@
   let hardDeadline = "";
 
   const projectId = get(currentProjectId);
-  const elementTypeId = 1;
+  const elementTypeId = 1; // Specific element type for the logo
 
   function onClose() {
     dispatch("close");
@@ -21,12 +21,11 @@
 
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("projectId", projectId);
-    formData.append("elementTypeId", elementTypeId);
 
     try {
+      // Include projectId and elementTypeId as query parameters
       const response = await fetch(
-        `http://localhost:8080/zpi/projectElements/uploadElement`,
+        `http://192.168.0.102:8080/zpi/projectElements/uploadElement?projectId=${projectId}&elementTypeId=${elementTypeId}`,
         {
           method: "POST",
           body: formData,
@@ -48,7 +47,7 @@
   onMount(async () => {
     try {
       const response = await fetch(
-        `http://localhost:8080/zpi/deadlines/getDeadlineByProjectIdAndElementTypeId?projectId=${projectId}&elementTypeId=${elementTypeId}`
+        `http://192.168.0.102:8080/zpi/deadlines/getDeadlineByProjectIdAndElementTypeId?projectId=${projectId}&elementTypeId=${elementTypeId}`
       );
 
       if (response.ok) {

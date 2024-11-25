@@ -18,7 +18,7 @@
     try {
       loading = true;
 
-      const response = await fetch("http://localhost:8080/auth/login", {
+      const response = await fetch("http://192.168.0.102:8080/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -43,15 +43,15 @@
   function loginWithGoogle() {
     console.log(
       "Redirecting to:",
-      "http://localhost:8080/oauth2/authorization/google"
+      "http://192.168.0.102:8080/oauth2/authorization/google"
     );
     window.location.href =
-      "http://localhost:8080/oauth2/authorization/google";
+      "http://192.168.0.102:8080/oauth2/authorization/google";
   }
 
   function loginWithFacebook() {
     window.location.href =
-      "http://localhost:8080/oauth2/authorization/facebook";
+      "http://192.168.0.102:8080/oauth2/authorization/facebook";
   }
 
   function handleUsosLogin() {

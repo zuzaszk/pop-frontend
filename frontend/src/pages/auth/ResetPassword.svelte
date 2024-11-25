@@ -49,7 +49,7 @@
       successMessage = "";
 
       const response = await fetch(
-        "http://localhost:8080/auth/reset-password",
+        "http://192.168.0.102:8080/auth/reset-password",
         {
           method: "POST",
           headers: {

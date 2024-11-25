@@ -33,7 +33,7 @@
       const queryString = queryParams.length ? `?${queryParams.join("&")}` : "";
 
       const response = await fetch(
-        `http://localhost:8080/zpi/project/listAll${queryString}`
+        `http://192.168.0.102:8080/zpi/project/listAll${queryString}`
       );
 
       if (response.ok) {
@@ -251,7 +251,7 @@
       const queryString = queryParams.length ? `?${queryParams.join("&")}` : "";
 
       const response = await fetch(
-        `http://localhost:8080/zpi/project/listAll${queryString}`
+        `http://192.168.0.102:8080/zpi/project/listAll${queryString}`
       );
 
       if (response.ok) {

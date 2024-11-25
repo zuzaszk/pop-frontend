@@ -11,7 +11,7 @@
 
     onMount(async () => {
       try {
-        const response = await fetch('http://localhost:8080/zpi/editions/listAll');
+        const response = await fetch('http://192.168.0.102:8080/zpi/editions/listAll');
         if (response.ok) {
           editions = await response.json();
           console.log("Editions data fetched:", editions); 
@@ -40,7 +40,7 @@
   
       try {
         const response = await fetch(
-          `http://localhost:8080/zpi/project/create?title=${encodeURIComponent(projectName)}&editionId=${selectedEdition}`,
+          `http://192.168.0.102:8080/zpi/project/create?title=${encodeURIComponent(projectName)}&editionId=${selectedEdition}`,
           {
             method: 'POST',
           }
@@ -159,7 +159,7 @@
   onMount(async () => {
     try {
       const response = await fetch(
-        "http://localhost:8080/zpi/editions/listAll"
+        "http://192.168.0.102:8080/zpi/editions/listAll"
       );
       if (response.ok) {
         editions = await response.json();
@@ -183,7 +183,7 @@
 
     try {
       const response = await fetch(
-        `http://localhost:8080/zpi/project/create?title=${encodeURIComponent(projectName)}&editionId=${selectedEdition}`,
+        `http://192.168.0.102:8080/zpi/project/create?title=${encodeURIComponent(projectName)}&editionId=${selectedEdition}`,
         { method: "POST" }
       );
 
@@ -315,7 +315,7 @@
   onMount(async () => {
     try {
       const response = await fetch(
-        "http://localhost:8080/zpi/editions/listAll"
+        "http://192.168.0.102:8080/zpi/editions/listAll"
       );
       if (response.ok) {
         editions = await response.json();
@@ -339,7 +339,7 @@
 
     try {
       const response = await fetch(
-        `http://localhost:8080/zpi/project/create?title=${encodeURIComponent(
+        `http://192.168.0.102:8080/zpi/project/create?title=${encodeURIComponent(
           projectName
         )}&editionId=${selectedEdition}`,
         { method: "POST" }

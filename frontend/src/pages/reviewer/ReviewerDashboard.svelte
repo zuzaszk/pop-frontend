@@ -34,7 +34,7 @@
 
   async function fetchStatistics() {
     try {
-      const url = `http://localhost:8080/zpi/statistic/getCounts`;
+      const url = `http://192.168.0.102:8080/zpi/statistic/getCounts`;
       const response = await fetch(url);
       const result = await response.json();
 
@@ -51,7 +51,7 @@
 
   async function fetchAverageEvaluationScore() {
     try {
-      const url = `http://localhost:8080/zpi/statistic/averageGrades?n=1`;
+      const url = `http://192.168.0.102:8080/zpi/statistic/averageGrades?n=1`;
       const response = await fetch(url);
       const result = await response.json();
 
@@ -69,7 +69,7 @@
   async function fetchChartData() {
     try {
       errorMessage = "";
-      const url = `http://localhost:8080/zpi/statistic/topTechnologies`;
+      const url = `http://192.168.0.102:8080/zpi/statistic/topTechnologies`;
       const response = await fetch(url);
       const result = await response.json();
 
@@ -139,7 +139,7 @@
   async function fetchLinearChartData() {
     try {
       linearChartError = "";
-      const url = `http://localhost:8080/zpi/statistic/averageGrades?n=${yearsInput}`;
+      const url = `http://192.168.0.102:8080/zpi/statistic/averageGrades?n=${yearsInput}`;
       const response = await fetch(url);
       const result = await response.json();
 

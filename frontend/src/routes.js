@@ -22,6 +22,7 @@ import ChairDashboard from "./pages/chair/ChairDashboard.svelte";
 import ViewFiles from "./pages/reviewer/ViewFiles.svelte";
 import MyTeams from "./pages/supervisor/MyTeams.svelte";
 import ViewScoreDetails from "./pages/supervisor/ViewScoreDetails.svelte";
+import TeamDetails from "./pages/supervisor/TeamDetails.svelte";
 
 export const routes = {
   "/": Login,
@@ -50,4 +51,5 @@ export const routes = {
   "/files/:projectId": ViewFiles,
   "/my-teams": MyTeams,
   "/score-details": ViewScoreDetails,
+  "/teams/:teamId": TeamDetails, 
 };

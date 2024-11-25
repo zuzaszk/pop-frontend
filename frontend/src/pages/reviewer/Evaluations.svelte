@@ -20,7 +20,7 @@
   async function fetchEvaluations() {
     try {
       const url =
-        `http://localhost:8080/zpi/evaluations/assignedEvaluateList?userId=${userId}&evaluationRoleId=${evaluationRoleId}` +
+        `http://192.168.0.102:8080/zpi/evaluations/assignedEvaluateList?userId=${userId}&evaluationRoleId=${evaluationRoleId}` +
         (selectedEditionId ? `&editionId=${selectedEditionId}` : "");
       const response = await fetch(url);
 
@@ -58,7 +58,7 @@
   async function fetchEditions() {
     try {
       const response = await fetch(
-        "http://localhost:8080/zpi/editions/listAll"
+        "http://192.168.0.102:8080/zpi/editions/listAll"
       );
       if (response.ok) {
         editions = await response.json();
@@ -207,7 +207,7 @@
   async function fetchEvaluations() {
     try {
       const url =
-        `http://localhost:8080/zpi/evaluations/assignedEvaluateList?userId=${userId}&evaluationRoleId=${evaluationRoleId}` +
+        `http://192.168.0.102:8080/zpi/evaluations/assignedEvaluateList?userId=${userId}&evaluationRoleId=${evaluationRoleId}` +
         (selectedEditionId ? `&editionId=${selectedEditionId}` : "");
       const response = await fetch(url);
 
@@ -245,7 +245,7 @@
   async function fetchEditions() {
     try {
       const response = await fetch(
-        "http://localhost:8080/zpi/editions/listAll"
+        "http://192.168.0.102:8080/zpi/editions/listAll"
       );
       if (response.ok) {
         editions = await response.json();
@@ -405,7 +405,7 @@
   async function fetchEvaluations() {
     try {
       const url =
-        `http://localhost:8080/zpi/evaluations/assignedEvaluateList?userId=${userId}&evaluationRoleId=${evaluationRoleId}` +
+        `http://192.168.0.102:8080/zpi/evaluations/assignedEvaluateList?userId=${userId}&evaluationRoleId=${evaluationRoleId}` +
         (selectedEditionId ? `&editionId=${selectedEditionId}` : "");
       const response = await fetch(url);
 
@@ -453,7 +453,7 @@
   async function fetchEditions() {
     try {
       const response = await fetch(
-        "http://localhost:8080/zpi/editions/listAll"
+        "http://192.168.0.102:8080/zpi/editions/listAll"
       );
       if (response.ok) {
         editions = await response.json();
