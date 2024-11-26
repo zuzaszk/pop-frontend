@@ -27,6 +27,7 @@
 
   const userId = 8;
   const roleId = 3;
+  const evaluationRoleId = 1;
 
   $: loc.subscribe(($loc) => {
     const pathParts = $loc.location.split("/");
@@ -37,8 +38,8 @@
     return languageCode === 1
       ? "English"
       : languageCode === 2
-        ? "Polish"
-        : "Unknown";
+      ? "Polish"
+      : "Unknown";
   }
 
   async function fetchProjectDetails() {
@@ -50,7 +51,7 @@
 
     try {
       const response = await fetch(
-        `http://192.168.0.102:8080/zpi/project/basicInfo?projectId=${projectId}`
+        `http://localhost:8080/zpi/project/basicInfo?projectId=${projectId}`
       );
       if (response.ok) {
         const data = await response.json();
@@ -79,7 +80,7 @@
   async function fetchUserRating() {
     try {
       const response = await fetch(
-        `http://192.168.0.102:8080/zpi/evaluations/getEvaluation?projectId=${projectId}&userId=${userId}&roleId=${roleId}`
+        `http://localhost:8080/zpi/evaluations/getEvaluation?projectId=${projectId}&userId=${userId}&evaluationRoleId=${evaluationRoleId}`
       );
       if (response.ok) {
         const data = await response.json();
@@ -104,7 +105,7 @@
   async function fetchPoster(projectElementId) {
     try {
       const response = await fetch(
-        `http://192.168.0.102:8080/zpi/projectElements/retrieve?projectElementId=${projectElementId}`
+        `http://localhost:8080/zpi/projectElements/retrieve?projectElementId=${projectElementId}`
       );
       if (response.ok) {
         posterUrl = response.url;
@@ -135,7 +136,7 @@
 
     try {
       const response = await fetch(
-        `http://192.168.0.102:8080/zpi/reviews/add`,
+        `http://localhost:8080/zpi/reviews/add`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -176,11 +177,11 @@
 
     const payload = existingRating
       ? { evaluationId: existingRating.evaluationId, score: userScore }
-      : { projectId, userId, roleId, score: userScore };
+      : { projectId, userId, evaluationRoleId, score: userScore };
 
     const apiUrl = existingRating
-      ? "http://192.168.0.102:8080/zpi/evaluations/update"
-      : "http://192.168.0.102:8080/zpi/evaluations/add";
+      ? "http://localhost:8080/zpi/evaluations/update"
+      : "http://localhost:8080/zpi/evaluations/add";
 
     const method = existingRating ? "PUT" : "POST";
 
@@ -260,19 +261,13 @@
           <p class="text-lg text-[#7F8C8D] mb-6">
             {project.overview || "No overview available."}
           </p>
-          <h2 class="text-xl font-bold text-[#2C3E50] mb-2">
-            Project Description
-          </h2>
+          <h2 class="text-xl font-bold text-[#2C3E50] mb-2">Description</h2>
           <p class="text-lg text-[#7F8C8D] mb-6">
             {project.description || "No description available."}
           </p>
           <h3 class="text-lg font-bold text-[#2C3E50]">Language:</h3>
           <p class="text-[#7F8C8D] font-medium mb-6">
             {getLanguageName(project.language)}
-          </p>
-          <h3 class="text-lg font-bold text-[#2C3E50]">Technologies Used:</h3>
-          <p class="text-[#7F8C8D] font-medium mb-6">
-            {project.keywords || "Not specified"}
           </p>
           <div class="bg-[#ECF0F1] p-4 rounded-lg mb-6">
             <h3 class="text-lg font-bold text-[#2C3E50] mb-4">Team Members</h3>
@@ -288,6 +283,7 @@
             </div>
           </div>
         </div>
+
         <div class="lg:w-1/3 lg:pl-6 flex justify-center lg:justify-end">
           {#if posterUrl}
             <img src={posterUrl} alt="Project Poster" class="poster-image" />
@@ -413,8 +409,8 @@
           {submittingRating
             ? "Submitting..."
             : existingRating
-              ? "Update Rating"
-              : "Submit Rating"}
+            ? "Update Rating"
+            : "Submit Rating"}
         </button>
         <button
           on:click={() => (showRatingModal = false)}
@@ -484,6 +480,8 @@
 <script>
   import { onMount } from "svelte";
   import { loc, push } from "svelte-spa-router";
+  import { get } from "svelte/store";
+  import { authStore } from "../stores/authStore";
 
   let projectId = null;
   let project = {};
@@ -508,14 +506,22 @@
   const commentsPerPage = 5;
   let totalPages = 1;
 
-  const userId = 8;
-  const roleId = 3;
+  let userId = null;
+  let roleId = null;
   const evaluationRoleId = 1;
+
 
   $: loc.subscribe(($loc) => {
     const pathParts = $loc.location.split("/");
     projectId = pathParts[pathParts.length - 1];
   });
+
+
+  $: {
+    const { user } = get(authStore);
+    userId = user?.userId;
+    roleId = user?.userRole?.[0]?.roleId;
+  }
 
   function getLanguageName(languageCode) {
     return languageCode === 1
@@ -533,9 +539,21 @@
     }
 
     try {
+      const token = get(authStore)?.token;
+      if (!token) {
+        push("/login");
+        return;
+      }
+
       const response = await fetch(
-        `http://192.168.0.102:8080/zpi/project/basicInfo?projectId=${projectId}`
+        `http://localhost:8080/zpi/project/basicInfo?projectId=${projectId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
+
       if (response.ok) {
         const data = await response.json();
         project = data;
@@ -562,9 +580,18 @@
 
   async function fetchUserRating() {
     try {
+      const token = get(authStore)?.token;
+      if (!token) return;
+
       const response = await fetch(
-        `http://192.168.0.102:8080/zpi/evaluations/getEvaluation?projectId=${projectId}&userId=${userId}&evaluationRoleId=${evaluationRoleId}`
+        `http://localhost:8080/zpi/evaluations/getEvaluation?projectId=${projectId}&userId=${userId}&evaluationRoleId=${evaluationRoleId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
+
       if (response.ok) {
         const data = await response.json();
         if (data.success && data.data) {
@@ -587,9 +614,18 @@
 
   async function fetchPoster(projectElementId) {
     try {
+      const token = get(authStore)?.token;
+      if (!token) return;
+
       const response = await fetch(
-        `http://192.168.0.102:8080/zpi/projectElements/retrieve?projectElementId=${projectElementId}`
+        `http://localhost:8080/zpi/projectElements/retrieve?projectElementId=${projectElementId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
+
       if (response.ok) {
         posterUrl = response.url;
       }
@@ -618,14 +654,17 @@
     };
 
     try {
-      const response = await fetch(
-        `http://192.168.0.102:8080/zpi/reviews/add`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        }
-      );
+      const token = get(authStore)?.token;
+      if (!token) return;
+
+      const response = await fetch(`http://localhost:8080/zpi/reviews/add`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
 
       if (response.ok) {
         submitCommentSuccessMessage = "Comment submitted successfully!";
@@ -663,15 +702,21 @@
       : { projectId, userId, evaluationRoleId, score: userScore };
 
     const apiUrl = existingRating
-      ? "http://192.168.0.102:8080/zpi/evaluations/update"
-      : "http://192.168.0.102:8080/zpi/evaluations/add";
+      ? "http://localhost:8080/zpi/evaluations/update"
+      : "http://localhost:8080/zpi/evaluations/add";
 
     const method = existingRating ? "PUT" : "POST";
 
     try {
+      const token = get(authStore)?.token;
+      if (!token) return;
+
       const response = await fetch(apiUrl, {
         method,
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify(payload),
       });
 
@@ -723,6 +768,7 @@
 
   onMount(fetchProjectDetails);
 </script>
+
 
 {#if loading}
   <div class="text-center text-xl text-[#2C3E50]">

@@ -3,33 +3,69 @@
   import LoginForm from "../../components/LoginForm.svelte";
   import SocialLogin from "../../components/SocialLogin.svelte";
   import UsosLogin from "../../components/UsosLogin.svelte";
+  import { authStore } from "../../stores/authStore";
 
   let email = "";
   let password = "";
   let errorMessage = "";
   let loading = false;
 
+  function mapRole(userRoles) {
+    if (userRoles.some(role => role.roleId === 1)) return "student";
+    if (userRoles.some(role => role.roleId === 2)) return "supervisor";
+    if (userRoles.some(role => role.roleId === 3)) return "reviewer";
+    if (userRoles.some(role => role.roleId === 4)) return "chair";
+    return "spectator";
+  }
+
   async function loginWithEmail() {
-    if (!email || !password) {
-      errorMessage = "Email and password are required.";
-      return;
-    }
+  if (!email || !password) {
+    errorMessage = "Email and password are required.";
+    return;
+  }
 
-    try {
-      loading = true;
+  try {
+    loading = true;
 
-      const response = await fetch("http://192.168.0.102:8080/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+    const response = await fetch("http://localhost:8080/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      sessionStorage.setItem("authToken", data.token);
+
+      // Fetch user details
+      const userResponse = await fetch("http://localhost:8080/user/currentUser", {
+        headers: { Authorization: `Bearer ${data.token}` },
       });
 
-      const data = await response.json();
+      if (userResponse.ok) {
+        const userData = await userResponse.json();
+        const role = mapRole(userData.userRole);
 
-      if (response.ok) {
-        sessionStorage.setItem("authToken", data.token);
+        authStore.set({
+            token: data.token,
+            user: userData,
+            role,
+            isAuthenticated: true,
+          });
 
-        push("/dashboard");
+          const dashboardRoutes = {
+            student: "/student-dashboard",
+            supervisor: "/supervisor-dashboard",
+            reviewer: "/reviewer-dashboard",
+            chair: "/chair-dashboard",
+            spectator: "/projects",
+          };
+
+       push(dashboardRoutes[role] || "/projects");
+        } else {
+          errorMessage = "Failed to fetch user data.";
+        }
       } else {
         errorMessage = data.message || "Login failed. Please try again.";
       }
@@ -40,18 +76,18 @@
     }
   }
 
-  function loginWithGoogle() {
-    console.log(
-      "Redirecting to:",
-      "http://192.168.0.102:8080/oauth2/authorization/google"
-    );
-    window.location.href =
-      "http://192.168.0.102:8080/oauth2/authorization/google";
-  }
+
+function loginWithGoogle() {
+  const googleAuthUrl = "http://localhost:8080/oauth2/authorization/google";
+
+  console.log("Redirecting to:", googleAuthUrl);
+  window.location.href = googleAuthUrl;
+}
+
 
   function loginWithFacebook() {
     window.location.href =
-      "http://192.168.0.102:8080/oauth2/authorization/facebook";
+      "http://localhost:8080/oauth2/authorization/facebook";
   }
 
   function handleUsosLogin() {

@@ -20,8 +20,8 @@
     errorMessage = "";
     try {
       const url = selectedEditionId
-        ? `http://192.168.0.102:8080/zpi/statistic/evaluationDetails?editionId=${selectedEditionId}`
-        : `http://192.168.0.102:8080/zpi/statistic/evaluationDetails`;
+        ? `http://localhost:8080/zpi/statistic/evaluationDetails?editionId=${selectedEditionId}`
+        : `http://localhost:8080/zpi/statistic/evaluationDetails`;
 
       const response = await fetch(url);
       if (response.ok) {
@@ -43,7 +43,7 @@
   async function fetchEditions() {
     try {
       const response = await fetch(
-        "http://192.168.0.102:8080/zpi/editions/listAll"
+        "http://localhost:8080/zpi/editions/listAll"
       );
       if (response.ok) {
         editions = await response.json();

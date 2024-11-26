@@ -2,7 +2,6 @@ import Login from "./pages/auth/login.svelte";
 import Signup from "./pages/auth/signup.svelte";
 import ForgotPassword from "./pages/auth/ForgotPassword.svelte";
 import ResetPassword from "./pages/auth/ResetPassword.svelte";
-import Logout from "./pages/auth/Logout.svelte";
 import Projects from "./pages/Projects.svelte";
 import ProjectDetails from "./pages/ProjectDetails.svelte";
 import CreateProject from "./pages/chair/CreateProject.svelte";
@@ -31,7 +30,6 @@ export const routes = {
   "/reset-password": ResetPassword,
   "/dashboard": StudentDashboard,
   "/projects": Projects,
-  "/logout": Logout,
   "/projects/:id": ProjectDetails,
   "/create-project": CreateProject,
   "/create-edition": CreateEdition,

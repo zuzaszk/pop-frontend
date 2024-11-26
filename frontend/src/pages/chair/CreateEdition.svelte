@@ -26,7 +26,7 @@
 
     try {
       const response = await fetch(
-        `http://192.168.0.102:8080/zpi/edition/create`,
+        `http://localhost:8080/zpi/edition/create`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -173,7 +173,7 @@
 
     try {
       const response = await fetch(
-        `http://192.168.0.102:8080/zpi/edition/create`,
+        `http://localhost:8080/zpi/edition/create`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

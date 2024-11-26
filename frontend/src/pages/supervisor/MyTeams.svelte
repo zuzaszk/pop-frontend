@@ -5,7 +5,7 @@
     import ProjectCard from "../../components/ProjectCard.svelte";
     import Pagination from "../../components/Pagination.svelte";
   
-    let userId = 31; 
+    let userId = 5; 
     let roleId = 2; 
     let title = "";
     let year = "";
@@ -35,7 +35,7 @@
 
     const queryString = queryParams.length ? `&${queryParams.join("&")}` : "";
     const timestamp = new Date().getTime();
-    const url = `http://192.168.0.102:8080/zpi/project/getByUserRole?userId=${userId}&roleId=${roleId}${queryString}&_=${timestamp}`;
+    const url = `http://localhost:8080/zpi/project/getByUserRole?userId=${userId}&roleId=${roleId}${queryString}&_=${timestamp}`;
 
     console.log("Fetching URL:", url);
 

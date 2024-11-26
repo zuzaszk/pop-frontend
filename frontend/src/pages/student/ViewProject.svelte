@@ -51,7 +51,7 @@
 
     try {
       const response = await fetch(
-        `http://192.168.0.102:8080/zpi/project/basicInfo?projectId=${projectId}`
+        `http://localhost:8080/zpi/project/basicInfo?projectId=${projectId}`
       );
       if (response.ok) {
         const data = await response.json();
@@ -168,7 +168,7 @@
                   {new Date(element.createdAt).toLocaleString()}
                 </span>
                 <a
-                  href={`http://192.168.0.102:8080/zpi/projectElements/retrieve?projectElementId=${element.elementId}`}
+                  href={`http://localhost:8080/zpi/projectElements/retrieve?projectElementId=${element.elementId}`}
                   target="_blank"
                   class="download-btn text-[#E74C3C] hover:text-red-600 text-sm font-medium"
                 >
@@ -312,7 +312,7 @@
 
     try {
       const response = await fetch(
-        `http://192.168.0.102:8080/zpi/project/basicInfo?projectId=${projectId}`
+        `http://localhost:8080/zpi/project/basicInfo?projectId=${projectId}`
       );
       if (response.ok) {
         const data = await response.json();
@@ -434,7 +434,7 @@
                   {new Date(element.createdAt).toLocaleString()}
                 </span>
                 <a
-                  href={`http://192.168.0.102:8080/zpi/projectElements/retrieve?projectElementId=${element.elementId}`}
+                  href={`http://localhost:8080/zpi/projectElements/retrieve?projectElementId=${element.elementId}`}
                   target="_blank"
                   class="download-btn text-[#E74C3C] hover:text-red-600 text-sm font-medium"
                 >

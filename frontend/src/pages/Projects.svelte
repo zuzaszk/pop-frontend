@@ -33,11 +33,12 @@
       const queryString = queryParams.length ? `?${queryParams.join("&")}` : "";
 
       const response = await fetch(
-        `http://192.168.0.102:8080/zpi/project/listAll${queryString}`
+        `http://localhost:8080/zpi/project/listAll${queryString}`
       );
 
       if (response.ok) {
         allProjects = await response.json();
+        calculateItemsPerPage();
         totalPages = Math.ceil(allProjects.length / itemsPerPage);
         currentPage = 1;
         updateDisplayedProjects();
@@ -47,6 +48,14 @@
     } catch (err) {
       error = `Error fetching projects: ${err.message}`;
       console.error(error);
+    }
+  }
+
+  function calculateItemsPerPage() {
+    if (window.innerWidth >= 1600) {
+      itemsPerPage = 12;
+    } else {
+      itemsPerPage = 8;
     }
   }
 
@@ -75,8 +84,16 @@
     viewMode = mode;
   }
 
+  function handleResize() {
+    calculateItemsPerPage();
+    totalPages = Math.ceil(allProjects.length / itemsPerPage);
+    updateDisplayedProjects();
+  }
+
   onMount(() => {
     fetchProjects();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   });
 </script>
 
@@ -216,9 +233,13 @@
     }
   }
 </style> -->
+
+
 <script>
   import { onMount } from "svelte";
   import { push } from "svelte-spa-router";
+  import { get } from "svelte/store";
+  import { authStore } from "../stores/authStore"; 
   import SearchBar from "../components/SearchBar.svelte";
   import ProjectCard from "../components/ProjectCard.svelte";
   import Pagination from "../components/Pagination.svelte";
@@ -238,6 +259,14 @@
     try {
       error = "";
 
+      
+      const { token } = get(authStore);
+      if (!token) {
+        console.error("No token found. Redirecting to login.");
+        push("/login");
+        return;
+      }
+
       const queryParams = [];
       if (year) queryParams.push(`year=${encodeURIComponent(year)}`);
 
@@ -251,7 +280,12 @@
       const queryString = queryParams.length ? `?${queryParams.join("&")}` : "";
 
       const response = await fetch(
-        `http://192.168.0.102:8080/zpi/project/listAll${queryString}`
+        `http://localhost:8080/project/listAll${queryString}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, 
+          },
+        }
       );
 
       if (response.ok) {
@@ -261,7 +295,9 @@
         currentPage = 1;
         updateDisplayedProjects();
       } else {
-        error = "Failed to fetch projects.";
+        const errorDetail = await response.text();
+        console.error("Fetch Error:", response.status, response.statusText, errorDetail);
+        error = `Failed to fetch projects: ${response.status} - ${response.statusText}`;
       }
     } catch (err) {
       error = `Error fetching projects: ${err.message}`;
@@ -271,7 +307,7 @@
 
   function calculateItemsPerPage() {
     if (window.innerWidth >= 1600) {
-      itemsPerPage = 16;
+      itemsPerPage = 12;
     } else {
       itemsPerPage = 8;
     }
