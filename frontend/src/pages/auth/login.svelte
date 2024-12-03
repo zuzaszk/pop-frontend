@@ -10,91 +10,116 @@
   let errorMessage = "";
   let loading = false;
 
-  function mapRole(userRoles) {
-    if (userRoles.some(role => role.roleId === 1)) return "student";
-    if (userRoles.some(role => role.roleId === 2)) return "supervisor";
-    if (userRoles.some(role => role.roleId === 3)) return "reviewer";
-    if (userRoles.some(role => role.roleId === 4)) return "chair";
-    return "spectator";
+  function mapRole(roleId) {
+    switch (roleId) {
+      case 1:
+        return "student";
+      case 2:
+        return "supervisor";
+      case 3:
+        return "reviewer";
+      case 4:
+        return "chair";
+      case 5:
+        return "spectator"; 
+      default:
+        return "unknown";
+    }
   }
 
-  async function loginWithEmail() {
-  if (!email || !password) {
-    errorMessage = "Email and password are required.";
-    return;
-  }
-
-  try {
-    loading = true;
-
-    const response = await fetch("http://localhost:8080/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
-
-    const data = await response.json();
-
-    if (response.ok) {
-      sessionStorage.setItem("authToken", data.token);
-
-      // Fetch user details
+  // Fetch current user information using the token
+  async function fetchCurrentUser(token) {
+    try {
       const userResponse = await fetch("http://localhost:8080/user/currentUser", {
-        headers: { Authorization: `Bearer ${data.token}` },
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       if (userResponse.ok) {
         const userData = await userResponse.json();
-        const role = mapRole(userData.userRole);
+        const role = mapRole(userData.userRole[0]?.roleId);
 
+        // Store token in cookies
+        document.cookie = `authToken=${token}; path=/; max-age=86400;`; // Token expires in 1 day
+
+        // Update authStore
         authStore.set({
-            token: data.token,
-            user: userData,
-            role,
-            isAuthenticated: true,
-          });
+          token,
+          user: userData,
+          role,
+          isAuthenticated: true,
+        });
 
-          const dashboardRoutes = {
-            student: "/student-dashboard",
-            supervisor: "/supervisor-dashboard",
-            reviewer: "/reviewer-dashboard",
-            chair: "/chair-dashboard",
-            spectator: "/projects",
-          };
+        // Redirect based on role
+        const dashboardRoutes = {
+          student: "/student-dashboard",
+          supervisor: "/supervisor-dashboard",
+          reviewer: "/reviewer-dashboard",
+          chair: "/chair-dashboard",
+          spectator: "/projects",
+        };
 
-       push(dashboardRoutes[role] || "/projects");
-        } else {
-          errorMessage = "Failed to fetch user data.";
-        }
+        push(dashboardRoutes[role] || "/projects");
+      } else {
+        errorMessage = "Failed to fetch user data.";
+        console.error("Failed to fetch user details:", userResponse.statusText);
+      }
+    } catch (error) {
+      errorMessage = "Error fetching user data.";
+      console.error("Error during user data fetch:", error);
+    }
+  }
+
+  // Login using email and password
+  async function loginWithEmail() {
+    if (!email || !password) {
+      errorMessage = "Email and password are required.";
+      return;
+    }
+
+    try {
+      loading = true;
+
+      const response = await fetch("http://localhost:8080/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        await fetchCurrentUser(data.token); // Fetch user details and handle token
       } else {
         errorMessage = data.message || "Login failed. Please try again.";
+        console.error("Login failed:", response.statusText);
       }
     } catch (error) {
       errorMessage = "An error occurred during login. Please try again.";
+      console.error("Login error:", error);
     } finally {
       loading = false;
     }
   }
 
-
-function loginWithGoogle() {
-  const googleAuthUrl = "http://localhost:8080/oauth2/authorization/google";
-
-  console.log("Redirecting to:", googleAuthUrl);
-  window.location.href = googleAuthUrl;
-}
-
+  
+  function loginWithGoogle() {
+    const googleAuthUrl = "http://localhost:8080/oauth2/authorization/google";
+    window.location.href = googleAuthUrl;
+  }
 
   function loginWithFacebook() {
-    window.location.href =
-      "http://localhost:8080/oauth2/authorization/facebook";
+    const facebookAuthUrl = "http://localhost:8080/oauth2/authorization/facebook";
+    window.location.href = facebookAuthUrl;
   }
 
+  
   function handleUsosLogin() {
-    window.location.href =
+    const usosUrl =
       "https://login.pwr.edu.pl/auth/realms/pwr.edu.pl/protocol/cas/login?service=https%3A%2F%2Fweb.usos.pwr.edu.pl%2Fkontroler.php%3F_action%3Dlogowaniecas%2Findex&locale=en";
+    window.location.href = usosUrl;
   }
 
+  
   function redirectToSignup() {
     push("/signup");
   }
@@ -114,24 +139,30 @@ function loginWithGoogle() {
   <div
     class="relative z-10 flex flex-col sm:flex-row w-full max-w-4xl h-auto bg-white shadow-2xl rounded-2xl overflow-hidden border border-gray-200 transform scale-75 origin-center"
   >
+   
     <UsosLogin {handleUsosLogin} />
 
+    
     <div
       class="w-full sm:w-1/2 bg-gradient-to-br from-gray-800 to-gray-900 text-white p-12 flex flex-col justify-center items-center"
     >
       <h2 class="text-3xl font-bold mb-6">Login as Guest</h2>
       <p class="text-lg mb-6">View team projects as a spectator</p>
 
+      
       <SocialLogin {loginWithGoogle} {loginWithFacebook} />
 
       <div class="my-6 w-full border-t border-gray-500"></div>
 
+      
       <LoginForm bind:email bind:password {loginWithEmail} {loading} />
 
+     
       {#if errorMessage}
         <p class="text-red-500 mt-4 text-center">{errorMessage}</p>
       {/if}
 
+      
       <div class="flex justify-between mt-6 w-full text-sm text-gray-400">
         <a
           on:click={redirectToForgotPassword}

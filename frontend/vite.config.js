@@ -5,11 +5,11 @@ export default defineConfig({
   plugins: [svelte()],
   resolve: {
     alias: {
-      '@': '/src',  // This creates an alias for the src folder
+      '@': '/src', 
     },
   },
   server: {
-    host: '0.0.0.0',  // Allows access from other devices on the network
-    port: 5173,       // Change this if needed
+    host: '0.0.0.0', 
+    port: 5173,       
   },
 });

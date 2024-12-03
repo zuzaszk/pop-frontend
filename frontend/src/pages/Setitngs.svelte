@@ -1,97 +1,105 @@
 <script>
-  import { onMount } from "svelte";
-  import { push } from "svelte-spa-router";
+  import { get } from "svelte/store";
+  import { authStore } from "../stores/authStore";
 
-  let currentRoleId = null;
   let roles = [];
   let selectedRoleId = null;
   let successMessage = "";
   let errorMessage = "";
+  let currentRoleId = null; 
 
-  async function fetchUserRoles() {
-    const token = sessionStorage.getItem("authToken");
+  function mapRole(roleId) {
+    switch (roleId) {
+      case 1:
+        return "student";
+      case 2:
+        return "supervisor";
+      case 3:
+        return "reviewer";
+      case 4:
+        return "chair";
+      default:
+        return "spectator";
+    }
+  }
 
-    try {
-      const response = await fetch(`http://localhost:8080/user/roles`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      if (response.ok) {
-        roles = await response.json();
-
-        const currentRoleResponse = await fetch(
-          `http://localhost:8080/user/currentRole`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-
-        if (currentRoleResponse.ok) {
-          currentRoleId = await currentRoleResponse.json();
-          selectedRoleId = currentRoleId;
-        } else {
-          errorMessage = "Failed to fetch current role.";
-        }
-      } else {
-        errorMessage = "Failed to fetch roles.";
+  $: {
+    const { user, role } = get(authStore);
+    if (user) {
+      roles = user.userRole || []; 
+      currentRoleId = roles.find((r) => mapRole(r.roleId) === role)?.roleId || null; 
+      if (!selectedRoleId) {
+        selectedRoleId = currentRoleId; 
       }
-    } catch (error) {
-      console.error("Error fetching roles:", error);
-      errorMessage = "An error occurred. Please try again.";
     }
   }
 
   async function switchRole() {
-    const token = sessionStorage.getItem("authToken");
+  const token = get(authStore).token;
 
-    if (!selectedRoleId || selectedRoleId === currentRoleId) {
-      errorMessage = "Please select a different role to switch.";
-      return;
-    }
-
-    try {
-      const response = await fetch(
-        `http://localhost:8080/user/switchRole?roleId=${selectedRoleId}`,
-        {
-          method: "POST",
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
-      if (response.ok) {
-        successMessage = "Role switched successfully!";
-        currentRoleId = selectedRoleId;
-      } else {
-        errorMessage = "Failed to switch role.";
-      }
-    } catch (error) {
-      console.error("Error switching role:", error);
-      errorMessage = "An error occurred. Please try again.";
-    }
+  if (!selectedRoleId || selectedRoleId === currentRoleId) {
+    errorMessage = "Please select a different role to switch.";
+    successMessage = ""; 
+    return;
   }
 
-  onMount(fetchUserRoles);
+  try {
+    const userId = get(authStore).user.userId;
+
+    const response = await fetch(
+      `http://localhost:8080/user/switchRole?userId=${userId}&roleId=${selectedRoleId}`,
+      {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+
+    if (response.ok) {
+      successMessage = "Role switched successfully!";
+      errorMessage = ""; 
+
+      const newRole = mapRole(selectedRoleId);
+
+      authStore.update((state) => ({
+        ...state,
+        role: newRole, 
+        
+      }));
+      console.log("authStore updated:", get(authStore));
+
+
+      currentRoleId = selectedRoleId;
+    } else {
+      const errorData = await response.json();
+      errorMessage = errorData.message || "Failed to switch role.";
+      successMessage = ""; 
+    }
+  } catch (error) {
+    console.error("Error switching role:", error);
+    errorMessage = "An error occurred. Please try again.";
+    successMessage = ""; 
+  }
+}
+
 </script>
 
-<div
-  class="container mx-auto p-6 bg-white rounded-lg shadow-lg mt-10 max-w-3xl"
->
-  <h2 class="text-2xl font-bold text-[#2C3E50] mb-6">Settings</h2>
+
+<div class="container mx-auto p-6 bg-gray-100 rounded-lg shadow-lg mt-10 max-w-3xl">
+  <h2 class="text-2xl font-bold text-gray-800 mb-6">Settings</h2>
 
   <div class="mb-8">
-    <h3 class="text-xl font-semibold text-[#2C3E50] mb-4">Switch Role</h3>
+    <h3 class="text-xl font-semibold text-gray-800 mb-4">Switch Role</h3>
+
 
     {#if errorMessage}
-      <div
-        class="bg-red-100 border border-red-400 text-red-700 p-3 rounded mb-4"
-      >
+      <div class="bg-red-100 border border-red-400 text-red-700 p-3 rounded mb-4">
         {errorMessage}
       </div>
     {/if}
+
+   
     {#if successMessage}
-      <div
-        class="bg-green-100 border border-green-400 text-green-700 p-3 rounded mb-4"
-      >
+      <div class="bg-green-100 border border-green-400 text-green-700 p-3 rounded mb-4">
         {successMessage}
       </div>
     {/if}
@@ -100,8 +108,9 @@
       <p class="text-gray-700">
         <strong>Current Role:</strong>
         {#if currentRoleId}
-          {roles.find((role) => role.roleId === currentRoleId)?.roleName ||
-            "Unknown"}
+          {mapRole(currentRoleId)}
+        {:else}
+          Not assigned
         {/if}
       </p>
     </div>
@@ -109,18 +118,17 @@
     <div class="flex flex-col md:flex-row gap-4 items-center">
       <select
         bind:value={selectedRoleId}
-        class="p-3 border border-gray-300 rounded-lg flex-1 bg-white text-gray-700 focus:ring-2 focus:ring-[#E74C3E] focus:outline-none"
+        class="p-3 border border-gray-300 rounded-lg flex-1 bg-white text-gray-800 focus:ring-2 focus:ring-red-400 focus:outline-none"
       >
         {#each roles as role}
           <option value={role.roleId} disabled={role.roleId === currentRoleId}>
-            {role.roleName}
-            {role.roleId === currentRoleId ? " (Current)" : ""}
+            {mapRole(role.roleId)} {role.roleId === currentRoleId ? "(Current)" : ""}
           </option>
         {/each}
       </select>
       <button
         on:click={switchRole}
-        class="bg-[#E74C3E] text-white py-2 px-4 rounded-lg hover:bg-[#C0392B] transition duration-200 focus:ring-2 focus:ring-[#E74C3E] focus:outline-none"
+        class="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition duration-200 focus:ring-2 focus:ring-red-400 focus:outline-none"
       >
         Switch Role
       </button>
@@ -132,6 +140,8 @@
   .container {
     max-width: 600px;
     margin: auto;
+    background-color: #f9f9f9;
+    border: 1px solid #e5e5e5;
   }
 
   select {
@@ -151,3 +161,4 @@
     cursor: not-allowed;
   }
 </style>
+

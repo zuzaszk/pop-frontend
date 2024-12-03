@@ -22,10 +22,14 @@ import ViewFiles from "./pages/reviewer/ViewFiles.svelte";
 import MyTeams from "./pages/supervisor/MyTeams.svelte";
 import ViewScoreDetails from "./pages/supervisor/ViewScoreDetails.svelte";
 import TeamDetails from "./pages/supervisor/TeamDetails.svelte";
+import LoginSuccess from "./pages/auth/LoginSuccess.svelte";
+
 
 export const routes = {
   "/": Login,
+  "/login-success": LoginSuccess,
   "/signup": Signup,
+  
   "/forgot-password": ForgotPassword,
   "/reset-password": ResetPassword,
   "/dashboard": StudentDashboard,

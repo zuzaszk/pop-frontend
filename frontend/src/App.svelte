@@ -35,6 +35,8 @@
   import Header from "./components/Header.svelte";
   import { onMount } from "svelte";
   import { authStore } from "./stores/authStore";
+  import { push } from "svelte-spa-router";
+
 
   let currentPath = "";
   let role = "";
@@ -44,13 +46,9 @@
   $: authStore.subscribe((auth) => {
     role = auth?.role || "";
   });
+  console.log(currentPath);
 
-  onMount(() => {
-    const token = sessionStorage.getItem("authToken");
-    if (!token) {
-      push("/login");
-    }
-  });
+
 </script>
 
 <main class="bg-[#F7F9F9] min-h-screen flex flex-col">
