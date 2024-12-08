@@ -2,6 +2,7 @@
   import ModalTemplate from "./ModalTemplate.svelte";
   import { currentProjectId } from "../../projectStore";
   import { get } from "svelte/store";
+  import { authStore } from "../../stores/authStore";
   import { createEventDispatcher, onMount } from "svelte";
 
   const dispatch = createEventDispatcher();
@@ -9,8 +10,14 @@
   let softDeadline = "";
   let hardDeadline = "";
 
-  const projectId = get(currentProjectId);
+  let projectId;
+  let token;
   const elementTypeId = 4; 
+  $: {
+    projectId = get(currentProjectId);
+    const auth = get(authStore);
+    token = auth?.token || null;
+  }
 
   function onClose() {
     dispatch("close");
@@ -23,11 +30,13 @@
     formData.append("file", file);
 
     try {
-      // Include projectId and elementTypeId as query parameters
       const response = await fetch(
-        `http://localhost:8080/zpi/projectElements/uploadElement?projectId=${projectId}&elementTypeId=${elementTypeId}`,
+        `http://192.168.0.102:8080/projectElements/uploadElement?projectId=${projectId}&elementTypeId=${elementTypeId}`,
         {
           method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`, // Add token for authentication
+          },
           body: formData,
         }
       );
@@ -47,7 +56,12 @@
   onMount(async () => {
     try {
       const response = await fetch(
-        `http://localhost:8080/zpi/deadlines/getDeadlineByProjectIdAndElementTypeId?projectId=${projectId}&elementTypeId=${elementTypeId}`
+        `http://192.168.0.102:8080/deadlines/getDeadlineByProjectIdAndElementTypeId?projectId=${projectId}&elementTypeId=${elementTypeId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Add token for authentication
+          },
+        }
       );
 
       if (response.ok) {

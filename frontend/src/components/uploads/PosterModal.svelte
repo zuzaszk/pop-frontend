@@ -3,14 +3,23 @@
   import { currentProjectId } from "../../projectStore";
   import { get } from "svelte/store";
   import { createEventDispatcher, onMount } from "svelte";
+  import { authStore } from "../../stores/authStore";
+
 
   const dispatch = createEventDispatcher();
 
   let softDeadline = "";
   let hardDeadline = "";
 
-  const projectId = get(currentProjectId);
-  const elementTypeId = 5;
+  let projectId;
+  let token;
+  const elementTypeId = 5; 
+  $: {
+    projectId = get(currentProjectId);
+    const auth = get(authStore);
+    token = auth?.token || null;
+  }
+
 
   function onClose() {
     dispatch("close");
@@ -24,9 +33,12 @@
 
     try {
       const response = await fetch(
-        `http://localhost:8080/zpi/projectElements/uploadElement?projectId=${projectId}&elementTypeId=${elementTypeId}`,
+        `http://192.168.0.102:8080/projectElements/uploadElement?projectId=${projectId}&elementTypeId=${elementTypeId}`,
         {
           method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`, // Add token for authentication
+          },
           body: formData,
         }
       );
@@ -46,7 +58,12 @@
   onMount(async () => {
     try {
       const response = await fetch(
-        `http://localhost:8080/zpi/deadlines/getDeadlineByProjectIdAndElementTypeId?projectId=${projectId}&elementTypeId=${elementTypeId}`
+        `http://192.168.0.102:8080/deadlines/getDeadlineByProjectIdAndElementTypeId?projectId=${projectId}&elementTypeId=${elementTypeId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Add token for authentication
+          },
+        }
       );
       if (response.ok) {
         const data = await response.json();

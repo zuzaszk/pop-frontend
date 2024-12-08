@@ -2,6 +2,9 @@
   import { onMount } from "svelte";
   import { Chart as ChartJS } from "chart.js/auto";
   import { push } from "svelte-spa-router";
+  import { get } from "svelte/store"; 
+  import { authStore } from "../../stores/authStore"; 
+
 
   let totalUsers = 0;
   let totalProjects = 0;
@@ -24,6 +27,9 @@
   let linearChartData = [];
   let linearChartError = "";
 
+  const { token, user } = get(authStore);
+  const userName = user?.firstName || "User"; 
+
   function redirectToMyTeams() {
     push("/my-teams");
   }
@@ -34,8 +40,11 @@
 
   async function fetchStatistics() {
     try {
-      const url = `http://localhost:8080/zpi/statistic/getCounts`;
-      const response = await fetch(url);
+      const url = `http://192.168.0.102:8080/statistic/getCounts`;
+      const response = await fetch(url, {
+        headers: { Authorization: `Bearer ${token}` }, 
+      });
+
       const result = await response.json();
 
       if (!response.ok || !result.success)
@@ -51,8 +60,10 @@
 
   async function fetchAverageEvaluationScore() {
     try {
-      const url = `http://localhost:8080/zpi/statistic/averageGrades?n=1`;
-      const response = await fetch(url);
+      const url = `http://192.168.0.102:8080/statistic/averageGrades?n=1`;
+      const response = await fetch(url, {
+        headers: { Authorization: `Bearer ${token}` }, 
+      });
       const result = await response.json();
 
       if (!response.ok || !result.success)
@@ -69,8 +80,10 @@
   async function fetchChartData() {
     try {
       errorMessage = "";
-      const url = `http://localhost:8080/zpi/statistic/topTechnologies`;
-      const response = await fetch(url);
+      const url = `http://192.168.0.102:8080/statistic/topTechnologies`;
+      const response = await fetch(url, {
+        headers: { Authorization: `Bearer ${token}` }, 
+      });
       const result = await response.json();
 
       if (!response.ok || !result.success)
@@ -139,8 +152,10 @@
   async function fetchLinearChartData() {
     try {
       linearChartError = "";
-      const url = `http://localhost:8080/zpi/statistic/averageGrades?n=${yearsInput}`;
-      const response = await fetch(url);
+      const url = `http://192.168.0.102:8080/statistic/averageGrades?n=${yearsInput}`;
+      const response = await fetch(url, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       const result = await response.json();
 
       if (!response.ok || !result.success)
@@ -232,7 +247,7 @@
 
 <div class="min-h-screen bg-gray-100 p-6 pt-24">
   <header class="mb-8">
-    <h1 class="text-2xl font-bold text-gray-900">Welcome, Krystian!</h1>
+    <h1 class="text-2xl font-bold text-gray-900">Welcome, {userName}!</h1>
     <p class="text-gray-600">Here are informations about final projects</p>
   </header>
 
@@ -344,4 +359,4 @@
   input[type="number"] {
     background-color: white;
   }
-</style>
+</style> 

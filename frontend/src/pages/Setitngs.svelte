@@ -47,7 +47,7 @@
     const userId = get(authStore).user.userId;
 
     const response = await fetch(
-      `http://localhost:8080/user/switchRole?userId=${userId}&roleId=${selectedRoleId}`,
+      `http://192.168.0.102:8080/user/switchRole?userId=${userId}&roleId=${selectedRoleId}`,
       {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },

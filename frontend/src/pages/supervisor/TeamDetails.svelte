@@ -33,7 +33,7 @@
   
       try {
         const response = await fetch(
-          `http://localhost:8080/zpi/project/basicInfo?projectId=${teamId}`
+          `http://192.168.0.102:8080/zpi/project/basicInfo?projectId=${teamId}`
         );
         if (response.ok) {
           const data = await response.json();
@@ -56,7 +56,7 @@
       if (!posterElementId) return;
       try {
         const response = await fetch(
-          `http://localhost:8080/zpi/projectElements/retrieve?projectElementId=${posterElementId}`
+          `http://192.168.0.102:8080/zpi/projectElements/retrieve?projectElementId=${posterElementId}`
         );
         if (response.ok) {
           posterUrl = response.url;
@@ -71,7 +71,7 @@
     async function fetchUserEvaluation() {
       try {
         const response = await fetch(
-          `http://localhost:8080/zpi/evaluations/getEvaluation?projectId=${teamId}&userId=${userId}&evaluationRoleId=${evaluationRoleId}`
+          `http://192.168.0.102:8080/zpi/evaluations/getEvaluation?projectId=${teamId}&userId=${userId}&evaluationRoleId=${evaluationRoleId}`
         );
   
         if (response.ok) {
@@ -96,7 +96,7 @@
       submitting = true;
       try {
         const response = await fetch(
-          `http://localhost:8080/zpi/evaluations/add`,
+          `http://192.168.0.102:8080/zpi/evaluations/add`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -142,7 +142,7 @@
       removingStudent = true;
       try {
         const response = await fetch(
-          `http://localhost:8080/zpi/userRole/removeStudentsFromProject?projectId=${teamId}`,
+          `http://192.168.0.102:8080/zpi/userRole/removeStudentsFromProject?projectId=${teamId}`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -327,6 +327,8 @@
    <script>
     import { onMount } from "svelte";
     import { loc, push } from "svelte-spa-router";
+    import { authStore } from "../../stores/authStore"; 
+    import { get } from "svelte/store";
   
     let teamId = null;
     let team = {};
@@ -342,8 +344,13 @@
     let posterUrl = "";
     let showEvaluationDetails = false;
   
-    const userId = 5;
-    const evaluationRoleId = 2;
+    let userId, token;
+
+    $: {
+    const auth = get(authStore);
+    userId = auth?.user?.userId || null; // Retrieve userId
+    token = auth?.token || null;        // Retrieve token
+  }
   
     $: loc.subscribe(($loc) => {
       const pathParts = $loc.location.split("/");
@@ -359,8 +366,12 @@
   
       try {
         const response = await fetch(
-          `http://localhost:8080/zpi/project/basicInfo?projectId=${teamId}`
-        );
+        `http://192.168.0.102:8080/project/basicInfo?projectId=${teamId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` }, // Pass token
+        }
+      );
+
         if (response.ok) {
           const data = await response.json();
           team = data;
@@ -386,8 +397,11 @@
   
       try {
         const response = await fetch(
-          `http://localhost:8080/zpi/projectElements/retrieve?projectElementId=${posterElement.elementId}`
-        );
+        `http://192.168.0.102:8080/projectElements/retrieve?projectElementId=${posterElement.elementId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` }, // Pass token
+        }
+      );
         if (response.ok) {
           posterUrl = response.url; // Dynamically set poster URL
         } else {
@@ -401,8 +415,11 @@
     async function fetchUserEvaluation() {
       try {
         const response = await fetch(
-          `http://localhost:8080/zpi/evaluations/getEvaluation?projectId=${teamId}&userId=${userId}&evaluationRoleId=${evaluationRoleId}`
-        );
+        `http://192.168.0.102:8080/evaluations/getEvaluation?projectId=${teamId}&userId=${userId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` }, // Pass token
+        }
+      );
   
         if (response.ok) {
           const data = await response.json();
@@ -426,14 +443,16 @@
       submitting = true;
       try {
         const response = await fetch(
-          `http://localhost:8080/zpi/evaluations/add`,
+          `http://192.168.0.102:8080/evaluations/add`,
           {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: { 
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`, // Pass token
+          },
             body: JSON.stringify({
               projectId: teamId,
               userId: userId,
-              evaluationRoleId,
               score: selectedRating,
               comment: evaluationComment,
               isPublic: 1,
@@ -468,13 +487,16 @@
       removingStudent = true;
       try {
         const response = await fetch(
-          `http://localhost:8080/zpi/userRole/removeStudentsFromProject?projectId=${teamId}`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify([studentId]),
-          }
-        );
+        `http://192.168.0.102:8080/userRole/removeStudentsFromProject?projectId=${teamId}`,
+        {
+          method: "POST",
+          headers: { 
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`, // Pass token
+          },
+          body: JSON.stringify([studentId]),
+        }
+      );
   
         const responseData = await response.json();
         if (response.ok && responseData.success) {

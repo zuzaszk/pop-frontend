@@ -1,6 +1,8 @@
 <script>
   import { onMount } from "svelte";
   import { currentProjectId } from "../../projectStore";
+  import { authStore } from "../../stores/authStore";
+  import { get } from "svelte/store";
 
   let projectId;
   let title = "";
@@ -13,6 +15,12 @@
   let errorMessage = "";
   let successMessage = "";
   let teamMembers = [];
+
+  let token;
+  $: {
+    const auth = get(authStore);
+    token = auth?.token || null;
+  }
 
   $: currentProjectId.subscribe((value) => {
     projectId = value;
@@ -29,7 +37,12 @@
 
     try {
       const response = await fetch(
-        `http://localhost:8080/zpi/project/basicInfo?projectId=${projectId}`
+        `http://192.168.0.102:8080/project/basicInfo?projectId=${projectId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Include token in the request header
+          },
+        }
       );
       if (response.ok) {
         const data = await response.json();
@@ -77,10 +90,13 @@
 
     try {
       const response = await fetch(
-        "http://localhost:8080/zpi/project/saveBasicInfo",
+        "http://192.168.0.102:8080/project/saveBasicInfo",
         {
           method: "PUT",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`, // Include token in the request header
+          },
           body: JSON.stringify(payload),
         }
       );

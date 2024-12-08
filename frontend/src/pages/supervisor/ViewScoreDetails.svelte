@@ -1,11 +1,15 @@
 <script>
   import { onMount } from "svelte";
+  import { authStore } from "../../stores/authStore"; 
+  import { get } from "svelte/store";
 
   let projects = [];
   let editions = [];
   let selectedEditionId = "";
   let errorMessage = "";
   let loading = false;
+
+  let userId, token;
 
   const columnMapping = {
     Reviewer: "AssignedToEvaluate",
@@ -15,15 +19,23 @@
     Spectator: "Spectator",
   };
 
+  $: {
+    const auth = get(authStore);
+    userId = auth?.user?.userId || null; // Retrieve userId
+    token = auth?.token || null;        // Retrieve token
+  }
+
   async function fetchProjects() {
     loading = true;
     errorMessage = "";
     try {
       const url = selectedEditionId
-        ? `http://localhost:8080/zpi/statistic/evaluationDetails?editionId=${selectedEditionId}`
-        : `http://localhost:8080/zpi/statistic/evaluationDetails`;
+        ? `http://192.168.0.102:8080/statistic/evaluationDetails?editionId=${selectedEditionId}`
+        : `http://192.168.0.102:8080/statistic/evaluationDetails`;
 
-      const response = await fetch(url);
+      const response = await fetch(url, {
+        headers: { Authorization: `Bearer ${token}` }, // Include token in headers
+      });
       if (response.ok) {
         const data = await response.json();
         projects = data.map((project) => ({
@@ -42,9 +54,9 @@
 
   async function fetchEditions() {
     try {
-      const response = await fetch(
-        "http://localhost:8080/zpi/editions/listAll"
-      );
+      const response = await fetch("http://192.168.0.102:8080/editions/listAll", {
+        headers: { Authorization: `Bearer ${token}` }, // Include token in headers
+      });
       if (response.ok) {
         editions = await response.json();
       } else {

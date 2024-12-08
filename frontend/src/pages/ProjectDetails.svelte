@@ -51,7 +51,7 @@
 
     try {
       const response = await fetch(
-        `http://localhost:8080/zpi/project/basicInfo?projectId=${projectId}`
+        `http://192.168.0.102:8080/zpi/project/basicInfo?projectId=${projectId}`
       );
       if (response.ok) {
         const data = await response.json();
@@ -80,7 +80,7 @@
   async function fetchUserRating() {
     try {
       const response = await fetch(
-        `http://localhost:8080/zpi/evaluations/getEvaluation?projectId=${projectId}&userId=${userId}&evaluationRoleId=${evaluationRoleId}`
+        `http://192.168.0.102:8080/zpi/evaluations/getEvaluation?projectId=${projectId}&userId=${userId}&evaluationRoleId=${evaluationRoleId}`
       );
       if (response.ok) {
         const data = await response.json();
@@ -105,7 +105,7 @@
   async function fetchPoster(projectElementId) {
     try {
       const response = await fetch(
-        `http://localhost:8080/zpi/projectElements/retrieve?projectElementId=${projectElementId}`
+        `http://192.168.0.102:8080/zpi/projectElements/retrieve?projectElementId=${projectElementId}`
       );
       if (response.ok) {
         posterUrl = response.url;
@@ -136,7 +136,7 @@
 
     try {
       const response = await fetch(
-        `http://localhost:8080/zpi/reviews/add`,
+        `http://192.168.0.102:8080/zpi/reviews/add`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -180,8 +180,8 @@
       : { projectId, userId, evaluationRoleId, score: userScore };
 
     const apiUrl = existingRating
-      ? "http://localhost:8080/zpi/evaluations/update"
-      : "http://localhost:8080/zpi/evaluations/add";
+      ? "http://192.168.0.102:8080/zpi/evaluations/update"
+      : "http://192.168.0.102:8080/zpi/evaluations/add";
 
     const method = existingRating ? "PUT" : "POST";
 
@@ -534,7 +534,7 @@
 
     try {
       const response = await fetch(
-        `http://localhost:8080/project/basicInfo?projectId=${projectId}`,
+        `http://192.168.0.102:8080/project/basicInfo?projectId=${projectId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -572,7 +572,7 @@
 
     try {
       const response = await fetch(
-        `http://localhost:8080/projectElements/retrieve?projectElementId=${posterElement.elementId}`,
+        `http://192.168.0.102:8080/projectElements/retrieve?projectElementId=${posterElement.elementId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -597,7 +597,7 @@
     const payload = { projectId, review: newComment, isPublic: true };
 
     try {
-      const response = await fetch(`http://localhost:8080/reviews/add`, {
+      const response = await fetch(`http://192.168.0.102:8080/reviews/add`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -800,7 +800,7 @@
 
     try {
       const response = await fetch(
-        `http://localhost:8080/project/basicInfo?projectId=${projectId}`,
+        `http://192.168.0.102:8080/project/basicInfo?projectId=${projectId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -838,7 +838,7 @@
 
     try {
       const response = await fetch(
-        `http://localhost:8080/projectElements/retrieve?projectElementId=${posterElement.elementId}`,
+        `http://192.168.0.102:8080/projectElements/retrieve?projectElementId=${posterElement.elementId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -863,7 +863,7 @@
     const payload = { projectId, review: newComment, isPublic: true };
 
     try {
-      const response = await fetch(`http://localhost:8080/reviews/add`, {
+      const response = await fetch(`http://192.168.0.102:8080/reviews/add`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

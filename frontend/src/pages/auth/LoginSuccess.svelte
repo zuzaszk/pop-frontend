@@ -27,7 +27,7 @@
         document.cookie = `authToken=${token}; path=/; max-age=86400;`;
   
         try {
-          const response = await fetch("http://localhost:8080/user/currentUser", {
+          const response = await fetch("http://192.168.0.102:8080/user/currentUser", {
             headers: { Authorization: `Bearer ${token}` },
           });
   

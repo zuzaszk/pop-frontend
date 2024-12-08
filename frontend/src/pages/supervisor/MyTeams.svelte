@@ -4,9 +4,11 @@
     import SearchBar from "../../components/SearchBar.svelte";
     import ProjectCard from "../../components/ProjectCard.svelte";
     import Pagination from "../../components/Pagination.svelte";
+    import { authStore } from "../../stores/authStore"; 
+    import { get } from "svelte/store";
   
-    let userId = 5; 
-    let roleId = 2; 
+    // let userId = 5; 
+    // let roleId = 2; 
     let title = "";
     let year = "";
     let language = "";
@@ -16,6 +18,40 @@
     let totalPages = 1;
     let error = "";
     let itemsPerPage = 8;
+
+    let userId, roleId, token;
+
+    $: {
+    const auth = get(authStore);
+
+    // Extract userId and token from authStore
+    userId = auth?.user?.userId || null;
+    token = auth?.token || null;
+
+    // Map role names to roleIds
+    const roleMapping = {
+      student: 1,
+      supervisor: 2,
+      reviewer: 3,
+      chair: 4,
+      spectator: 5,
+    };
+
+    // Resolve roleId using current role
+    if (auth?.user?.userRole && auth?.role) {
+      const currentRole = roleMapping[auth.role];
+      roleId = auth.user.userRole.find((r) => r.roleId === currentRole)?.roleId || null;
+    } else {
+      roleId = null; // Fallback
+    }
+
+    console.log("Auth object:", auth);
+    console.log("User ID:", userId);
+    console.log("Resolved roleId:", roleId);
+    console.log("Token:", token);
+  }
+
+
   
     async function fetchTeams() {
   try {
@@ -35,11 +71,13 @@
 
     const queryString = queryParams.length ? `&${queryParams.join("&")}` : "";
     const timestamp = new Date().getTime();
-    const url = `http://localhost:8080/zpi/project/getByUserRole?userId=${userId}&roleId=${roleId}${queryString}&_=${timestamp}`;
+    const url = `http://192.168.0.102:8080/project/getByUserRole?userId=${userId}&roleId=${roleId}${queryString}&_=${timestamp}`;
 
-    console.log("Fetching URL:", url);
+      console.log("Fetching URL:", url);
 
-    const response = await fetch(url);
+      const response = await fetch(url, {
+        headers: { Authorization: `Bearer ${token}` }, // Include token in header
+      });
 
     if (response.ok) {
       const result = await response.json();

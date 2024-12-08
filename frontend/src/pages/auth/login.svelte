@@ -30,7 +30,7 @@
   // Fetch current user information using the token
   async function fetchCurrentUser(token) {
     try {
-      const userResponse = await fetch("http://localhost:8080/user/currentUser", {
+      const userResponse = await fetch("http://192.168.0.102:8080/user/currentUser", {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -79,7 +79,7 @@
     try {
       loading = true;
 
-      const response = await fetch("http://localhost:8080/auth/login", {
+      const response = await fetch("http://192.168.0.102:8080/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -103,12 +103,12 @@
 
   
   function loginWithGoogle() {
-    const googleAuthUrl = "http://localhost:8080/oauth2/authorization/google";
+    const googleAuthUrl = "http://192.168.0.102:8080/oauth2/authorization/google";
     window.location.href = googleAuthUrl;
   }
 
   function loginWithFacebook() {
-    const facebookAuthUrl = "http://localhost:8080/oauth2/authorization/facebook";
+    const facebookAuthUrl = "http://192.168.0.102:8080/oauth2/authorization/facebook";
     window.location.href = facebookAuthUrl;
   }
 
