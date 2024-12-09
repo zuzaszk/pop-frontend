@@ -22,6 +22,8 @@
 
   let loading = true;
   let error = "";
+  let successMessage = "";
+  let errorMessage = "";
   let commentText = {};
   let submittingComment = false;
 
@@ -71,6 +73,40 @@
       loading = false;
     }
   }
+
+  async function previewFile(elementId) {
+  try {
+    const response = await fetch(
+      `http://192.168.0.102:8080/projectElements/retrieve?projectElementId=${elementId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (response.ok) {
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+
+      // Open the file in a new tab
+      const newTab = window.open(url, "_blank");
+      if (!newTab) {
+        alert("Please allow pop-ups in your browser for this site.");
+      }
+
+      // Optionally revoke the object URL after 5 minutes
+      setTimeout(() => window.URL.revokeObjectURL(url), 5 * 60 * 1000);
+    } else {
+      alert("Failed to fetch the file. Please try again.");
+    }
+  } catch (error) {
+    console.error("Error fetching file:", error);
+    alert("An error occurred while fetching the file.");
+  }
+}
+
+
 
   function navigateBack() {
     push(`/evaluations/${projectId}`);
@@ -179,15 +215,16 @@
                       {submittingComment ? "Submitting..." : "Submit"}
                     </button>
                   </td>
+                  
                   <td class="p-4 text-[#E74C3C]">
-                    <a
-                      href={`http://192.168.0.102:8080/zpi/projectElements/retrieve?projectElementId=${element.elementId}`}
-                      target="_blank"
+                    <button
                       class="hover:underline"
+                      on:click={() => previewFile(element.elementId)}
                     >
-                      Download
-                    </a>
+                      Preview
+                    </button>
                   </td>
+                  
                 </tr>
               {/each}
             </tbody>

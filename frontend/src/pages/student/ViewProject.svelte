@@ -77,14 +77,14 @@
   }
 
 
-  async function downloadFile(elementId) {
+  async function previewFile(elementId) {
   try {
     const response = await fetch(
       `http://192.168.0.102:8080/projectElements/retrieve?projectElementId=${elementId}`,
       {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${token}`, 
+          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -94,25 +94,21 @@
     }
 
     if (!response.ok) {
-      throw new Error(`Failed to download file: ${response.statusText}`);
+      throw new Error(`Failed to fetch file: ${response.statusText}`);
     }
 
     const blob = await response.blob();
-    const url = window.URL.createObjectURL(blob);
+    const fileUrl = window.URL.createObjectURL(blob);
 
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `project-element-${elementId}.file`; 
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-
-    window.URL.revokeObjectURL(url);
+    // Open file in a new tab
+    window.open(fileUrl, "_blank");
   } catch (error) {
-    console.error("Error downloading file:", error);
+    console.error("Error previewing file:", error);
     alert(error.message);
   }
 }
+
+
 
 
   async function fetchProjectDetails() {
@@ -170,15 +166,14 @@
 async function fetchPosterUrl(elementId) {
   try {
     const response = await fetch(
-  `http://192.168.0.102:8080/projectElements/retrieve?projectElementId=${elementId}`,
-  {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`, 
-    },
-  }
-);
-
+      `http://192.168.0.102:8080/projectElements/retrieve?projectElementId=${elementId}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`, 
+        },
+      }
+    );
 
     if (response.redirected) {
       console.error("Poster request was redirected to:", response.url);
@@ -189,12 +184,14 @@ async function fetchPosterUrl(elementId) {
       throw new Error(`Failed to fetch poster URL: ${response.statusText}`);
     }
 
-    return response.url; 
+    const blob = await response.blob(); // Convert to blob
+    return URL.createObjectURL(blob); // Create object URL for the blob
   } catch (error) {
     console.error("Error fetching poster URL:", error);
     return "";
   }
 }
+
 
 
   onMount(fetchProjectDetails);
@@ -307,9 +304,9 @@ async function fetchPosterUrl(elementId) {
                     <td class="p-4 text-[#E74C3C]">
                       <button
                         class="hover:underline text-[#E74C3C] font-bold"
-                        on:click={() => downloadFile(element.elementId)}
+                        on:click={() => previewFile(element.elementId)}
                       >
-                        Download
+                        Preview
                       </button>
                     </td>
                     
@@ -330,6 +327,7 @@ async function fetchPosterUrl(elementId) {
 {/if}
 
 <style>
+  
   .table-container {
     width: 100%;
     overflow-x: auto; /* Enable horizontal scrolling */

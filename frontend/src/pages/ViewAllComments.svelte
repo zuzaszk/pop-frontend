@@ -2,6 +2,8 @@
   import { onMount } from "svelte";
   import Pagination from "../components/Pagination.svelte";
   import { push } from "svelte-spa-router";
+  import { get } from "svelte/store"; 
+  import { authStore } from "../stores/authStore";
 
   export let params;
   let projectId = null;
@@ -12,6 +14,8 @@
   let totalPages = 1;
   let loading = true;
   let error = "";
+
+  const { token } = get(authStore); 
 
   onMount(() => {
     projectId = params?.projectId;
@@ -26,7 +30,13 @@
   async function fetchComments() {
     try {
       const response = await fetch(
-        `http://192.168.0.102:8080/zpi/project/basicInfo?projectId=${projectId}`
+        `http://192.168.0.102:8080/project/basicInfo?projectId=${projectId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, 
+            "Content-Type": "application/json",
+          },
+        }
       );
       if (response.ok) {
         const data = await response.json();
@@ -101,6 +111,9 @@
         <div class="comments-container text-left">
           {#each paginatedComments as comment}
             <div class="bg-[#ECF0F1] p-4 rounded-lg mb-4">
+              <p class="text-[#2C3E50] font-semibold">
+                {comment.fullname || "Unknown User"}:
+              </p>
               <p class="text-[#7F8C8D] font-medium">{comment.review}</p>
             </div>
           {/each}

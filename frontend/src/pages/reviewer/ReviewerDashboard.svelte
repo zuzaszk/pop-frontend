@@ -2,15 +2,19 @@
   import { onMount } from "svelte";
   import { Chart as ChartJS } from "chart.js/auto";
   import { push } from "svelte-spa-router";
+  import { get } from "svelte/store"; 
+  import { authStore } from "../../stores/authStore"; 
+
 
   let totalUsers = 0;
   let totalProjects = 0;
   let totalReviews = 0;
-  let teams = 2;
-  let completedProjects = 1;
-  let inProgressProjects = 2;
-  let pendingReviewProjects = 1;
+  let scoreDistribution = [];
   let averageEvaluationScore = 0;
+  let evaluatedProjects = 0;
+  let pendingProjects = 0;
+
+  
 
   let chartData = [];
   let errorMessage = "";
@@ -24,6 +28,12 @@
   let linearChartData = [];
   let linearChartError = "";
 
+  let barChartCanvas;
+  let barChartInstance = null;
+
+  const { token, user } = get(authStore);
+  const userName = user?.firstName || "User"; 
+
   function redirectToMyTeams() {
     push("/my-teams");
   }
@@ -32,10 +42,36 @@
     push("/score-details");
   }
 
+
+  async function fetchReviewerStatistics() {
+  try {
+    const url = `http://192.168.0.102:8080/statistic/reviewerStatistics`;
+    const response = await fetch(url, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    const result = await response.json();
+
+    if (!response.ok || !result.success) {
+      throw new Error(result.message || "Failed to fetch reviewer statistics");
+    }
+
+    evaluatedProjects = result.data.evaluatedProjectsCount || 0;
+    pendingProjects = result.data.notEvaluatedProjectsCount || 0;
+    scoreDistribution = result.data.scoreDistribution || [];
+  } catch (error) {
+    console.error("Error fetching reviewer statistics:", error.message);
+  }
+}
+
+
   async function fetchStatistics() {
     try {
-      const url = `http://localhost:8080/zpi/statistic/getCounts`;
-      const response = await fetch(url);
+      const url = `http://192.168.0.102:8080/statistic/getCounts`;
+      const response = await fetch(url, {
+        headers: { Authorization: `Bearer ${token}` }, 
+      });
+
       const result = await response.json();
 
       if (!response.ok || !result.success)
@@ -51,8 +87,10 @@
 
   async function fetchAverageEvaluationScore() {
     try {
-      const url = `http://localhost:8080/zpi/statistic/averageGrades?n=1`;
-      const response = await fetch(url);
+      const url = `http://192.168.0.102:8080/statistic/averageGrades?n=1`;
+      const response = await fetch(url, {
+        headers: { Authorization: `Bearer ${token}` }, 
+      });
       const result = await response.json();
 
       if (!response.ok || !result.success)
@@ -69,8 +107,10 @@
   async function fetchChartData() {
     try {
       errorMessage = "";
-      const url = `http://localhost:8080/zpi/statistic/topTechnologies`;
-      const response = await fetch(url);
+      const url = `http://192.168.0.102:8080/statistic/topTechnologies`;
+      const response = await fetch(url, {
+        headers: { Authorization: `Bearer ${token}` }, 
+      });
       const result = await response.json();
 
       if (!response.ok || !result.success)
@@ -139,8 +179,10 @@
   async function fetchLinearChartData() {
     try {
       linearChartError = "";
-      const url = `http://localhost:8080/zpi/statistic/averageGrades?n=${yearsInput}`;
-      const response = await fetch(url);
+      const url = `http://192.168.0.102:8080/statistic/averageGrades?n=${yearsInput}`;
+      const response = await fetch(url, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       const result = await response.json();
 
       if (!response.ok || !result.success)
@@ -216,6 +258,67 @@
     });
   }
 
+  function renderBarChart() {
+  if (!barChartCanvas) return;
+
+  if (barChartInstance) {
+    barChartInstance.destroy();
+  }
+
+  const data = {
+    labels: scoreDistribution.map((item) => item.score),
+    datasets: [
+      {
+        label: "Number of Projects",
+        data: scoreDistribution.map((item) => item.count),
+        backgroundColor: [
+          "#FF6384",
+          "#36A2EB",
+          "#FFCE56",
+          "#4BC0C0",
+          "#9966FF",
+        ],
+        borderColor: "#ffffff",
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  barChartInstance = new ChartJS(barChartCanvas, {
+    type: "bar",
+    data,
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        title: {
+          display: true,
+          text: "Scores Distribution",
+          font: { size: 16, weight: "bold" },
+        },
+      },
+      scales: {
+        x: {
+          title: {
+            display: true,
+            text: "Scores",
+            font: { size: 14 },
+          },
+        },
+        y: {
+          title: {
+            display: true,
+            text: "Number of Projects",
+            font: { size: 14 },
+          },
+          suggestedMin: 0,
+        },
+      },
+    },
+  });
+}
+
   function handleKeyPress(event) {
     if (event.key === "Enter") {
       fetchLinearChartData();
@@ -227,12 +330,14 @@
     fetchAverageEvaluationScore();
     fetchChartData();
     fetchLinearChartData();
+    fetchReviewerStatistics();
+    renderBarChart();
   });
 </script>
 
 <div class="min-h-screen bg-gray-100 p-6 pt-24">
   <header class="mb-8">
-    <h1 class="text-2xl font-bold text-gray-900">Welcome, Krystian!</h1>
+    <h1 class="text-2xl font-bold text-gray-900">Welcome, {userName}!</h1>
     <p class="text-gray-600">Here are informations about final projects</p>
   </header>
 
@@ -263,26 +368,21 @@
 
     <aside class="flex flex-col gap-4">
       <div class="bg-white p-6 rounded shadow">
-        <h3 class="text-lg font-medium text-gray-900">Your Teams</h3>
-        <p class="text-sm text-gray-600">Number of teams: {teams}</p>
-        <button
-          on:click={redirectToMyTeams}
-          class="mt-4 bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600"
-        >
-          Check My Teams
-        </button>
+        <h3 class="text-lg font-medium text-gray-900">Project Evaluation</h3>
+        <p class="text-sm text-gray-600">Projects Evaluated: {evaluatedProjects}</p>
+        <p class="text-sm text-gray-600">Pending Evaluation: {pendingProjects}</p>
       </div>
+      
 
       <div class="bg-white p-6 rounded shadow">
         <h3 class="text-lg font-medium text-gray-900">
-          Project Status Summary
+          Score Distribution
         </h3>
-        <ul class="text-sm text-gray-600">
-          <li>Completed Projects: {completedProjects}</li>
-          <li>In Progress: {inProgressProjects}</li>
-          <li>Pending Review: {pendingReviewProjects}</li>
-        </ul>
+        <div class="relative h-40">
+          <canvas bind:this={barChartCanvas}></canvas>
+        </div>
       </div>
+      
 
       <div class="bg-white p-6 rounded shadow">
         <h3 class="text-lg font-medium text-gray-900">
@@ -344,4 +444,4 @@
   input[type="number"] {
     background-color: white;
   }
-</style>
+</style> 

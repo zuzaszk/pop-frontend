@@ -10,6 +10,7 @@
   let selectedRating = 0;
   let evaluationComment = "";
   let existingEvaluation = null;
+  let isEvaluationComplete = false;
   let submitting = false;
   let loading = true;
   let error = "";
@@ -20,7 +21,7 @@
   let token;
   let userId;
   // const userId = 8;
-  const evaluationRoleId = 1;
+  // const evaluationRoleId = 1;
 
   $: {
     const auth = get(authStore);
@@ -68,90 +69,128 @@
   }
 
   async function fetchPoster() {
-    const posterElement = project.elements?.find(
-      (element) => element.elementTypeId === 5
+  const posterElement = project.elements?.find(
+    (element) => element.elementTypeId === 5
+  );
+
+  if (!posterElement) return;
+
+  try {
+    const response = await fetch(
+      `http://192.168.0.102:8080/projectElements/retrieve?projectElementId=${posterElement.elementId}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
     );
-    if (!posterElement) return;
 
-    try {
-      const response = await fetch(
-        `http://192.168.0.102:8080/projectElements/retrieve?projectElementId=${posterElement.elementId}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      if (response.ok) {
-        posterUrl = response.url;
-      } else {
-        notification = "Failed to fetch poster image.";
-      }
-    } catch (err) {
-      notification = `Error fetching poster image: ${err.message}`;
+    if (response.ok) {
+      const blob = await response.blob(); // Convert response to Blob
+      posterUrl = URL.createObjectURL(blob); // Create a Blob URL for the image
+    } else {
+      notification = "Failed to fetch poster image.";
+      console.error("Poster fetch failed with status:", response.status);
     }
+  } catch (err) {
+    notification = `Error fetching poster image: ${err.message}`;
+    console.error("Error:", err.message);
+  }
+}
+
+async function fetchUserRating() {
+  try {
+    const response = await fetch(
+      `http://192.168.0.102:8080/evaluations/getEvaluation?projectId=${projectId}&userId=${userId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (response.ok) {
+      const data = await response.json();
+      existingEvaluation = data.success ? data.data : null;
+
+      // Set score and comment from existing evaluation
+      if (existingEvaluation) {
+        selectedRating = existingEvaluation.score || 0;
+        evaluationComment = existingEvaluation.comment || "";
+      }
+    } else {
+      console.error("Failed to fetch user rating.");
+      existingEvaluation = null; // Reset to ensure it's falsy
+    }
+  } catch (err) {
+    console.error(`Error fetching user rating: ${err.message}`);
+    existingEvaluation = null; // Reset on error
+  } finally {
+      isEvaluationComplete =
+        existingEvaluation &&
+        existingEvaluation.score !== null &&
+        existingEvaluation.comment.trim() !== "";
+    }
+}
+
+
+
+async function submitEvaluation() {
+  if (!evaluationComment.trim()) {
+    notification = "Please provide a comment for your evaluation.";
+    return;
   }
 
-  async function fetchUserRating() {
-    try {
-      const response = await fetch(
-        `http://192.168.0.102:8080/evaluations/getEvaluation?projectId=${projectId}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+  submitting = true;
 
-      if (response.ok) {
-        const data = await response.json();
-        if (data.success && data.data) {
-          existingEvaluation = data.data;
-          selectedRating = existingEvaluation.score || 0;
-          evaluationComment = existingEvaluation.comment || "";
-        }
-      }
-    } catch (err) {
-      notification = `Error fetching user evaluation: ${err.message}`;
+  const payload = {
+    projectId,
+    userId: Number(userId),
+    score: selectedRating,
+    comment: evaluationComment,
+    isPublic: 1,
+  };
+
+  // Determine if the user has reviewed based on score and comment
+  // const hasReviewed = existingEvaluation && existingEvaluation.score !== null && existingEvaluation.comment.trim() !== "";
+
+  const apiUrl = isEvaluationComplete
+      ? `http://192.168.0.102:8080/evaluations/update`
+      : `http://192.168.0.102:8080/evaluations/add`;
+
+
+  // const method = hasReviewed ? "PUT" : "POST";
+
+  try {
+      const response = await fetch(apiUrl, {
+        method: isEvaluationComplete ? "PUT" : "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(
+          isEvaluationComplete
+            ? { ...payload, evaluationId: existingEvaluation.evaluationId }
+            : payload
+        ),
+      });
+
+    const result = await response.json();
+    if (response.ok && result.success) {
+        notification = isEvaluationComplete
+        ? "Evaluation updated successfully."
+        : "Evaluation submitted successfully.";
+
+      // Re-fetch updated evaluation
+      await fetchUserRating();
+    } else {
+      notification = result.message || "Failed to submit evaluation.";
     }
+  } catch (err) {
+    notification = `Error submitting evaluation: ${err.message}`;
+  } finally {
+    submitting = false;
   }
+}
 
-  async function submitEvaluation() {
-    if (!evaluationComment.trim()) {
-      notification = "Please provide a comment for your evaluation.";
-      return;
-    }
-
-    submitting = true;
-
-    try {
-      const response = await fetch(
-        `http://192.168.0.102:8080/evaluations/add`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            projectId,
-            evaluationRoleId,
-            score: selectedRating,
-            comment: evaluationComment,
-            isPublic: 1,
-          }),
-        }
-      );
-
-      const result = await response.json();
-      if (response.ok && result.success) {
-        notification = "Evaluation submitted successfully.";
-        await fetchUserRating();
-      } else {
-        notification = result.message || "Failed to submit evaluation.";
-      }
-    } catch (err) {
-      notification = `Error submitting evaluation: ${err.message}`;
-    } finally {
-      submitting = false;
-    }
-  }
 
   function toggleEvaluationDetails() {
     showEvaluationDetails = !showEvaluationDetails;
@@ -168,14 +207,17 @@
   <div class="text-center text-xl text-red-600">{error}</div>
 {:else}
   <div class="container mx-auto p-6 bg-white rounded-lg shadow-lg mt-20 max-w-6xl">
+    <!-- Notification for any alerts -->
     {#if notification}
       <div class="bg-yellow-100 text-yellow-800 p-4 rounded-md mb-4">
         {notification}
       </div>
     {/if}
 
+    <!-- Project Information -->
     <div>
       <div class="flex flex-col lg:flex-row justify-between">
+        <!-- Left Side: Project Title, Description, and Members -->
         <div class="lg:w-2/3">
           <h1 class="text-4xl font-bold text-[#2C3E50] mb-4">
             {project.title} ({project.acronym || "N/A"})
@@ -185,6 +227,7 @@
             {project.description || "No description available."}
           </p>
 
+          <!-- Team Members Section -->
           <div class="bg-[#ECF0F1] p-4 rounded-lg mb-6">
             <h3 class="text-lg font-bold text-[#2C3E50] mb-4">Team Members</h3>
             <div class="grid grid-cols-2 gap-4">
@@ -199,6 +242,7 @@
           </div>
         </div>
 
+        <!-- Right Side: Poster Display -->
         <div class="lg:w-1/3 lg:pl-6 flex justify-center lg:justify-end">
           {#if posterUrl}
             <img
@@ -210,11 +254,14 @@
         </div>
       </div>
 
+      <!-- Evaluation Section -->
       <div class="bg-[#F5F5F5] p-6 rounded-lg shadow-inner mt-10">
+        <!-- Dynamic Heading -->
         <h2 class="text-2xl font-bold text-[#2C3E50] mb-4">
-          Provide Your Evaluation
+          {existingEvaluation ? "Edit Your Evaluation" : "Provide Your Evaluation"}
         </h2>
 
+        <!-- Rating (Stars) -->
         <div class="flex items-center mb-6">
           <p class="mr-4 font-semibold text-[#2C3E50]">Score:</p>
           {#each [1, 2, 3, 4, 5] as star}
@@ -236,6 +283,7 @@
           {/each}
         </div>
 
+        <!-- Comment Input -->
         <textarea
           bind:value={evaluationComment}
           rows="4"
@@ -243,14 +291,20 @@
           class="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#E74C3C] text-[#2C3E50] placeholder-gray-400 bg-white resize-none mb-4"
         ></textarea>
 
+        <!-- Submit or Update Button -->
         <button
           on:click={submitEvaluation}
           class="bg-[#E74C3C] text-white py-2 px-6 rounded-md font-semibold hover:bg-[#C0392B] transition duration-200"
           disabled={submitting}
         >
-          {submitting ? "Submitting..." : "Submit Evaluation"}
+          {submitting
+            ? "Submitting..."
+            : isEvaluationComplete
+            ? "Update Evaluation"
+            : "Submit Evaluation"}
         </button>
 
+        <!-- Navigate to Files Button -->
         <button
           on:click={() => push(`/files/${projectId}`)}
           class="bg-[#E74C3C] text-white font-semibold py-2 px-4 rounded-lg hover:bg-[#C0392B] mt-4"
@@ -258,6 +312,7 @@
           View Files Uploaded
         </button>
 
+        <!-- Toggle Evaluation Details -->
         {#if existingEvaluation}
           <button
             on:click={toggleEvaluationDetails}
@@ -265,6 +320,8 @@
           >
             {showEvaluationDetails ? "Hide Evaluation" : "View Evaluation"}
           </button>
+
+          <!-- Display Evaluation Details -->
           {#if showEvaluationDetails}
             <div class="mt-4">
               <p class="text-gray-700">
@@ -286,6 +343,10 @@
     max-width: 1200px;
     padding: 1rem;
     width: 90%;
+  }
+
+  .rounded-lg {
+    border-radius: 0.5rem;
   }
 
   @media (max-width: 768px) {

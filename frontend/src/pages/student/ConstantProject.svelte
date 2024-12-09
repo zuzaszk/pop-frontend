@@ -40,7 +40,7 @@
         `http://192.168.0.102:8080/project/basicInfo?projectId=${projectId}`,
         {
           headers: {
-            Authorization: `Bearer ${token}`, // Include token in the request header
+            Authorization: `Bearer ${token}`, 
           },
         }
       );

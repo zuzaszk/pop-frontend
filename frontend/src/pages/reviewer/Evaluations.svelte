@@ -6,7 +6,7 @@
   import { get } from "svelte/store";
 
   // const userId = 8;
-  const evaluationRoleId = 1;
+  // const evaluationRoleId = 1;
 
   let evaluations = [];
   let editions = [];
