@@ -35,7 +35,7 @@
         {
           method: "POST",
           headers: {
-            Authorization: `Bearer ${token}`, // Add token for authentication
+            Authorization: `Bearer ${token}`, 
           },
           body: formData,
         }

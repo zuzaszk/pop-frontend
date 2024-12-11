@@ -303,7 +303,7 @@ async function fetchPosterUrl(elementId) {
                     </td>
                     <td class="p-4 text-[#E74C3C]">
                       <button
-                        class="hover:underline text-[#E74C3C] font-bold"
+                        class="hover:underline font-bold"
                         on:click={() => previewFile(element.elementId)}
                       >
                         Preview

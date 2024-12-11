@@ -67,8 +67,8 @@
       }));
       console.log("authStore updated:", get(authStore));
 
-
       currentRoleId = selectedRoleId;
+      
     } else {
       const errorData = await response.json();
       errorMessage = errorData.message || "Failed to switch role.";

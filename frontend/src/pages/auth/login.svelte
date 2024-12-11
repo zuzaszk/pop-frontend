@@ -9,6 +9,7 @@
   let password = "";
   let errorMessage = "";
   let loading = false;
+  
 
   function mapRole(roleId) {
     switch (roleId) {
@@ -113,13 +114,43 @@
   }
 
   
-  function handleUsosLogin() {
-    const usosUrl =
-      "https://login.pwr.edu.pl/auth/realms/pwr.edu.pl/protocol/cas/login?service=https%3A%2F%2Fweb.usos.pwr.edu.pl%2Fkontroler.php%3F_action%3Dlogowaniecas%2Findex&locale=en";
-    window.location.href = usosUrl;
+  async function handleUsosLogin() {
+  try {
+    const response = await fetch("http://192.168.0.102:8080/usos/login");
+    const data = await response.json();
+
+    if (response.ok && data.token) {
+      // Redirect the user to the provided token (redirection URI)
+      window.location.href = data.token;
+    } else {
+      errorMessage = data.message || "Failed to initiate USOS login.";
+      console.error("Error initiating USOS login:", data);
+    }
+  } catch (error) {
+    errorMessage = "An error occurred during USOS login.";
+    console.error("USOS login error:", error);
+  }
+}
+  
+async function handleUsosCallback() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const token = urlParams.get("jwt");
+
+  if (!token) {
+    errorMessage = "Missing JWT token from USOS callback.";
+    return;
   }
 
-  
+  try {
+    // Fetch user details using the token
+    await fetchCurrentUser(token);
+  } catch (error) {
+    errorMessage = "Error handling USOS callback.";
+    console.error("USOS callback error:", error);
+  }
+}
+
+
   function redirectToSignup() {
     push("/signup");
   }

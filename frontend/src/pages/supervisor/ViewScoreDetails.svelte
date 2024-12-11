@@ -34,7 +34,7 @@
         : `http://192.168.0.102:8080/statistic/evaluationDetails`;
 
       const response = await fetch(url, {
-        headers: { Authorization: `Bearer ${token}` }, // Include token in headers
+        headers: { Authorization: `Bearer ${token}` },
       });
       if (response.ok) {
         const data = await response.json();

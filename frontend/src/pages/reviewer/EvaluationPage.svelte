@@ -149,7 +149,6 @@ async function submitEvaluation() {
     isPublic: 1,
   };
 
-  // Determine if the user has reviewed based on score and comment
   // const hasReviewed = existingEvaluation && existingEvaluation.score !== null && existingEvaluation.comment.trim() !== "";
 
   const apiUrl = isEvaluationComplete
@@ -179,7 +178,6 @@ async function submitEvaluation() {
         ? "Evaluation updated successfully."
         : "Evaluation submitted successfully.";
 
-      // Re-fetch updated evaluation
       await fetchUserRating();
     } else {
       notification = result.message || "Failed to submit evaluation.";

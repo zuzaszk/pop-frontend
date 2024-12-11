@@ -183,7 +183,7 @@ async function fetchUserRating() {
       const data = await response.json();
       if (data.success) {
         existingRating = data.data;
-        userScore = existingRating?.score || 0; // Update the score
+        userScore = existingRating?.score || 0; 
       }
     } else {
       console.error("Failed to fetch user rating. Response:", response);

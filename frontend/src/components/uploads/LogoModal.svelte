@@ -13,7 +13,7 @@
 
   let projectId;
   let token;
-  const elementTypeId = 1; // Specific element type for the logo
+  const elementTypeId = 1; 
   $: {
     projectId = get(currentProjectId);
     const auth = get(authStore);
@@ -32,11 +32,11 @@
 
     try {
       const response = await fetch(
-        `http://192.168.0.102:8080//projectElements/uploadElement?projectId=${projectId}&elementTypeId=${elementTypeId}`,
+        `http://192.168.0.102:8080/projectElements/uploadElement?projectId=${projectId}&elementTypeId=${elementTypeId}`,
         {
           method: "POST",
           headers: {
-            Authorization: `Bearer ${token}`, // Add token for authentication
+            Authorization: `Bearer ${token}`, 
           },
           body: formData,
         }
