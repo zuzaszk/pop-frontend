@@ -7,13 +7,15 @@ export const authStore = writable({
   isAuthenticated: false,
 });
 
-export const setUser = (user, role) => {
+export const setUser = (user, role, token) => {
   authStore.set({
-    user,
-    role,
-    isAuthenticated: true,
+      token,
+      user,
+      role,
+      isAuthenticated: true,
   });
 };
+
 
 export const clearAuth = () => {
   document.cookie = "authToken=; path=/; max-age=0;"; // Clear token in cookies
@@ -24,4 +26,4 @@ export const clearAuth = () => {
     role: null,
     isAuthenticated: false,
   });
-};
+}
