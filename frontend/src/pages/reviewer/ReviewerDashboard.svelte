@@ -56,14 +56,23 @@
       throw new Error(result.message || "Failed to fetch reviewer statistics");
     }
 
+    // Update evaluation summary
     evaluatedProjects = result.data.evaluatedProjectsCount || 0;
     pendingProjects = result.data.notEvaluatedProjectsCount || 0;
+
+    // Update score distribution for the bar chart
     scoreDistribution = result.data.scoreDistribution || [];
+    console.log("Score Distribution:", scoreDistribution);
+
+    if (!scoreDistribution.length) {
+      console.warn("Score distribution is empty");
+    } else {
+      renderBarChart(); // Render the bar chart with the updated data
+    }
   } catch (error) {
     console.error("Error fetching reviewer statistics:", error.message);
   }
 }
-
 
   async function fetchStatistics() {
     try {
@@ -265,28 +274,30 @@
     barChartInstance.destroy();
   }
 
-  const data = {
-    labels: scoreDistribution.map((item) => item.score),
-    datasets: [
-      {
-        label: "Number of Projects",
-        data: scoreDistribution.map((item) => item.count),
-        backgroundColor: [
-          "#FF6384",
-          "#36A2EB",
-          "#FFCE56",
-          "#4BC0C0",
-          "#9966FF",
-        ],
-        borderColor: "#ffffff",
-        borderWidth: 1,
-      },
-    ],
-  };
+  const labels = scoreDistribution.map((item) =>
+    item.score === "N/A" ? "No Score" : `Score ${item.score}`
+  );
+  const data = scoreDistribution.map((item) => item.count);
 
   barChartInstance = new ChartJS(barChartCanvas, {
     type: "bar",
-    data,
+    data: {
+      labels,
+      datasets: [
+        {
+          label: "Number of Projects",
+          data,
+          backgroundColor: "#2980b9", 
+          hoverBackgroundColor: "#3498db", 
+          borderColor: "#ffffff", 
+
+
+
+
+          borderWidth: 1,
+        },
+      ],
+    },
     options: {
       responsive: true,
       maintainAspectRatio: false,
@@ -294,7 +305,7 @@
         legend: { display: false },
         title: {
           display: true,
-          text: "Scores Distribution",
+          text: "Scores Distribution for Projects",
           font: { size: 16, weight: "bold" },
         },
       },
@@ -376,7 +387,6 @@
 
       <div class="bg-white p-6 rounded shadow">
         <h3 class="text-lg font-medium text-gray-900">
-          Score Distribution
         </h3>
         <div class="relative h-40">
           <canvas bind:this={barChartCanvas}></canvas>
