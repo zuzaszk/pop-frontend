@@ -96,7 +96,7 @@
 
     try {
       const response = await fetch(
-        `http://192.168.0.102:8080/project/basicInfo?projectId=${projectId}`,
+        `http://localhost:8080/project/basicInfo?projectId=${projectId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -141,7 +141,7 @@
 
   try {
     const response = await fetch(
-      `http://192.168.0.102:8080/projectElements/retrieve?projectElementId=${posterElement.elementId}`,
+      `http://localhost:8080/projectElements/retrieve?projectElementId=${posterElement.elementId}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -171,7 +171,7 @@ async function fetchUserRating() {
 
   try {
     const response = await fetch(
-      `http://192.168.0.102:8080/evaluations/getEvaluation?projectId=${projectId}&userId=${userId}`,
+      `http://localhost:8080/evaluations/getEvaluation?projectId=${projectId}&userId=${userId}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -222,7 +222,7 @@ async function fetchUserRating() {
   console.log("Payload being sent:", JSON.stringify(payload));
 
   try {
-    const response = await fetch(`http://192.168.0.102:8080/reviews/add`, {
+    const response = await fetch(`http://localhost:8080/reviews/add`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -279,8 +279,8 @@ async function submitRating() {
       };
 
   const apiUrl = existingRating
-    ? "http://192.168.0.102:8080/evaluations/update"
-    : "http://192.168.0.102:8080/evaluations/add";
+    ? "http://localhost:8080/evaluations/update"
+    : "http://localhost:8080/evaluations/add";
 
   const method = existingRating ? "PUT" : "POST";
 

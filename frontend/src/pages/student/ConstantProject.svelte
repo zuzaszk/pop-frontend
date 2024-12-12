@@ -37,7 +37,7 @@
 
     try {
       const response = await fetch(
-        `http://192.168.0.102:8080/project/basicInfo?projectId=${projectId}`,
+        `http://localhost:8080/project/basicInfo?projectId=${projectId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`, 
@@ -90,7 +90,7 @@
 
     try {
       const response = await fetch(
-        "http://192.168.0.102:8080/project/saveBasicInfo",
+        "http://localhost:8080/project/saveBasicInfo",
         {
           method: "PUT",
           headers: {

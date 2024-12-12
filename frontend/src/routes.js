@@ -1,4 +1,5 @@
 import Login from "./pages/auth/login.svelte";
+import FinalizeUser from "./pages/auth/FinalizeUser.svelte";
 import Signup from "./pages/auth/signup.svelte";
 import ForgotPassword from "./pages/auth/ForgotPassword.svelte";
 import ResetPassword from "./pages/auth/ResetPassword.svelte";
@@ -28,8 +29,8 @@ import LoginSuccess from "./pages/auth/LoginSuccess.svelte";
 export const routes = {
   "/": Login,
   "/login-success": LoginSuccess,
+  "/finalize-user": FinalizeUser,
   "/signup": Signup,
-  
   "/forgot-password": ForgotPassword,
   "/reset-password": ResetPassword,
   "/dashboard": StudentDashboard,

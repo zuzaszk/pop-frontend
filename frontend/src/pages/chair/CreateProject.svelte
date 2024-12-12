@@ -16,7 +16,7 @@
 
   onMount(async () => {
     try {
-      const response = await fetch("http://192.168.0.102:8080/editions/listAll", {
+      const response = await fetch("http://localhost:8080/editions/listAll", {
         headers: {
           Authorization: `Bearer ${token}`, 
         },
@@ -43,7 +43,7 @@
 
     try {
       const response = await fetch(
-        `http://192.168.0.102:8080/project/create?title=${encodeURIComponent(
+        `http://localhost:8080/project/create?title=${encodeURIComponent(
           projectName
         )}&editionId=${selectedEdition}`,
         {

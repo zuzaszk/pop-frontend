@@ -30,7 +30,7 @@
   async function fetchComments() {
     try {
       const response = await fetch(
-        `http://192.168.0.102:8080/project/basicInfo?projectId=${projectId}`,
+        `http://localhost:8080/project/basicInfo?projectId=${projectId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`, 

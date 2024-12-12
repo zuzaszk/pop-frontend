@@ -50,7 +50,7 @@
   async function fetchProjectDetails() {
     try {
       const response = await fetch(
-        `http://192.168.0.102:8080/project/basicInfo?projectId=${projectId}`,
+        `http://localhost:8080/project/basicInfo?projectId=${projectId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -77,7 +77,7 @@
   async function previewFile(elementId) {
   try {
     const response = await fetch(
-      `http://192.168.0.102:8080/projectElements/retrieve?projectElementId=${elementId}`,
+      `http://localhost:8080/projectElements/retrieve?projectElementId=${elementId}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -123,7 +123,7 @@
     submittingComment = true;
     try {
       const response = await fetch(
-        `http://192.168.0.102:8080/comments/add`,
+        `http://localhost:8080/comments/add`,
         {
           method: "POST",
           headers: {

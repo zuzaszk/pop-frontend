@@ -31,7 +31,7 @@
   // Fetch current user information using the token
   async function fetchCurrentUser(token) {
     try {
-      const userResponse = await fetch("http://192.168.0.102:8080/user/currentUser", {
+      const userResponse = await fetch("http://localhost:8080/user/currentUser", {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -80,7 +80,7 @@
     try {
       loading = true;
 
-      const response = await fetch("http://192.168.0.102:8080/auth/login", {
+      const response = await fetch("http://localhost:8080/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -104,51 +104,44 @@
 
   
   function loginWithGoogle() {
-    const googleAuthUrl = "http://192.168.0.102:8080/oauth2/authorization/google";
+    const googleAuthUrl = "http://localhost:8080/oauth2/authorization/google";
     window.location.href = googleAuthUrl;
   }
 
   function loginWithFacebook() {
-    const facebookAuthUrl = "http://192.168.0.102:8080/oauth2/authorization/facebook";
+    const facebookAuthUrl = "http://localhost:8080/oauth2/authorization/facebook";
     window.location.href = facebookAuthUrl;
   }
 
   
-  async function handleUsosLogin() {
+ async function handleUsosLogin() {
   try {
-    const response = await fetch("http://192.168.0.102:8080/usos/login");
-    const data = await response.json();
+    const response = await fetch("http://localhost:8080/usos/login", {
+      method: "GET",
+      credentials: "include",
+    });
 
-    if (response.ok && data.token) {
-      // Redirect the user to the provided token (redirection URI)
-      window.location.href = data.token;
+    if (response.ok) {
+      const data = await response.json();
+
+      if (data.token) {
+        // Redirect to the URL provided by the backend
+        window.location.href = data.token;
+      } else {
+        errorMessage = "USOS login token missing in backend response.";
+        console.error(errorMessage);
+      }
     } else {
-      errorMessage = data.message || "Failed to initiate USOS login.";
-      console.error("Error initiating USOS login:", data);
+      const errorText = await response.text();
+      errorMessage = `Failed to initiate USOS login. Backend error: ${errorText}`;
+      console.error(errorMessage);
     }
   } catch (error) {
-    errorMessage = "An error occurred during USOS login.";
-    console.error("USOS login error:", error);
+    errorMessage = "An error occurred while initiating USOS login.";
+    console.error(error);
   }
 }
-  
-async function handleUsosCallback() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const token = urlParams.get("jwt");
 
-  if (!token) {
-    errorMessage = "Missing JWT token from USOS callback.";
-    return;
-  }
-
-  try {
-    // Fetch user details using the token
-    await fetchCurrentUser(token);
-  } catch (error) {
-    errorMessage = "Error handling USOS callback.";
-    console.error("USOS callback error:", error);
-  }
-}
 
 
   function redirectToSignup() {

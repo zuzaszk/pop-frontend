@@ -24,7 +24,7 @@
     errorMessage = "";
 
     try {
-      const response = await fetch("http://192.168.0.102:8080/edition/create", {
+      const response = await fetch("http://localhost:8080/edition/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -43,7 +43,7 @@
 
     try {
       const response = await fetch(
-        `http://192.168.0.102:8080/project/basicInfo?projectId=${projectId}`,
+        `http://localhost:8080/project/basicInfo?projectId=${projectId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -77,7 +77,7 @@
 
   try {
     const response = await fetch(
-      `http://192.168.0.102:8080/projectElements/retrieve?projectElementId=${posterElement.elementId}`,
+      `http://localhost:8080/projectElements/retrieve?projectElementId=${posterElement.elementId}`,
       {
         headers: { Authorization: `Bearer ${token}` },
       }
@@ -99,7 +99,7 @@
 async function fetchUserRating() {
   try {
     const response = await fetch(
-      `http://192.168.0.102:8080/evaluations/getEvaluation?projectId=${projectId}&userId=${userId}`,
+      `http://localhost:8080/evaluations/getEvaluation?projectId=${projectId}&userId=${userId}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -152,8 +152,8 @@ async function submitEvaluation() {
   // const hasReviewed = existingEvaluation && existingEvaluation.score !== null && existingEvaluation.comment.trim() !== "";
 
   const apiUrl = isEvaluationComplete
-      ? `http://192.168.0.102:8080/evaluations/update`
-      : `http://192.168.0.102:8080/evaluations/add`;
+      ? `http://localhost:8080/evaluations/update`
+      : `http://localhost:8080/evaluations/add`;
 
 
   // const method = hasReviewed ? "PUT" : "POST";

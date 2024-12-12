@@ -627,6 +627,7 @@
   function logout() {
     authStore.set({ token: null, user: null, role: null, isAuthenticated: false });
     document.cookie = "authToken=; path=/; max-age=0;"; 
+    document.cookie = "JSESSIONID=; path=/; max-age=0;";
     window.location.href = "/login"; 
   }
 

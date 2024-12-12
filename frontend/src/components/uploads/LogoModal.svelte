@@ -32,7 +32,7 @@
 
     try {
       const response = await fetch(
-        `http://192.168.0.102:8080/projectElements/uploadElement?projectId=${projectId}&elementTypeId=${elementTypeId}`,
+        `http://localhost:8080/projectElements/uploadElement?projectId=${projectId}&elementTypeId=${elementTypeId}`,
         {
           method: "POST",
           headers: {
@@ -56,7 +56,7 @@
   onMount(async () => {
     try {
       const response = await fetch(
-        `http://192.168.0.102:8080/deadlines/getDeadlineByProjectIdAndElementTypeId?projectId=${projectId}&elementTypeId=${elementTypeId}`,
+        `http://localhost:8080/deadlines/getDeadlineByProjectIdAndElementTypeId?projectId=${projectId}&elementTypeId=${elementTypeId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`, // Add token for authentication

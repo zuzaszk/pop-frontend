@@ -30,8 +30,8 @@
     errorMessage = "";
     try {
       const url = selectedEditionId
-        ? `http://192.168.0.102:8080/statistic/evaluationDetails?editionId=${selectedEditionId}`
-        : `http://192.168.0.102:8080/statistic/evaluationDetails`;
+        ? `http://localhost:8080/statistic/evaluationDetails?editionId=${selectedEditionId}`
+        : `http://localhost:8080/statistic/evaluationDetails`;
 
       const response = await fetch(url, {
         headers: { Authorization: `Bearer ${token}` },
@@ -54,7 +54,7 @@
 
   async function fetchEditions() {
     try {
-      const response = await fetch("http://192.168.0.102:8080/editions/listAll", {
+      const response = await fetch("http://localhost:8080/editions/listAll", {
         headers: { Authorization: `Bearer ${token}` }, // Include token in headers
       });
       if (response.ok) {

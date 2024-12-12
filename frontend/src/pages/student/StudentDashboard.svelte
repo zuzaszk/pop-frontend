@@ -27,6 +27,8 @@
   let linearChartData = [];
   let linearChartError = "";
 
+
+
   const { token, user } = get(authStore);
   const userName = user?.firstName || "User"; 
 
@@ -40,10 +42,15 @@
 
   async function fetchStatistics() {
     try {
-      const url = `http://192.168.0.102:8080/statistic/getCounts`;
+      if(!token){
+        console.error("No token found.")
+      }
+      const url = `http://localhost:8080/statistic/getCounts`;
       const response = await fetch(url, {
         headers: { Authorization: `Bearer ${token}` }, 
       });
+      console.log("Authorization header:", `Bearer ${token}`);
+
 
       const result = await response.json();
 
@@ -60,7 +67,7 @@
 
   async function fetchAverageEvaluationScore() {
     try {
-      const url = `http://192.168.0.102:8080/statistic/averageGrades?n=1`;
+      const url = `http://localhost:8080/statistic/averageGrades?n=1`;
       const response = await fetch(url, {
         headers: { Authorization: `Bearer ${token}` }, 
       });
@@ -80,7 +87,7 @@
   async function fetchChartData() {
     try {
       errorMessage = "";
-      const url = `http://192.168.0.102:8080/statistic/topTechnologies`;
+      const url = `http://localhost:8080/statistic/topTechnologies`;
       const response = await fetch(url, {
         headers: { Authorization: `Bearer ${token}` }, 
       });
@@ -152,7 +159,7 @@
   async function fetchLinearChartData() {
     try {
       linearChartError = "";
-      const url = `http://192.168.0.102:8080/statistic/averageGrades?n=${yearsInput}`;
+      const url = `http://localhost:8080/statistic/averageGrades?n=${yearsInput}`;
       const response = await fetch(url, {
         headers: { Authorization: `Bearer ${token}` },
       });

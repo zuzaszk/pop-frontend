@@ -51,7 +51,7 @@
   async function fetchComments(elementId) {
     try {
       const response = await fetch(
-        `http://192.168.0.102:8080/comments/getByElementId?elementId=${elementId}`,
+        `http://localhost:8080/comments/getByElementId?elementId=${elementId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`, 
@@ -80,7 +80,7 @@
   async function previewFile(elementId) {
   try {
     const response = await fetch(
-      `http://192.168.0.102:8080/projectElements/retrieve?projectElementId=${elementId}`,
+      `http://localhost:8080/projectElements/retrieve?projectElementId=${elementId}`,
       {
         method: "GET",
         headers: {
@@ -121,7 +121,7 @@
   try {
   
     const response = await fetch(
-      `http://192.168.0.102:8080/project/basicInfo?projectId=${projectId}`,
+      `http://localhost:8080/project/basicInfo?projectId=${projectId}`,
       {
         headers: {
           Authorization: `Bearer ${token}`, 
@@ -166,7 +166,7 @@
 async function fetchPosterUrl(elementId) {
   try {
     const response = await fetch(
-      `http://192.168.0.102:8080/projectElements/retrieve?projectElementId=${elementId}`,
+      `http://localhost:8080/projectElements/retrieve?projectElementId=${elementId}`,
       {
         method: "GET",
         headers: {

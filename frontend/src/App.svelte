@@ -52,7 +52,7 @@
 </script>
 
 <main class="bg-[#F7F9F9] min-h-screen flex flex-col">
-  {#if currentPath !== "/login" && currentPath !== "/signup" && currentPath !== "/forgot-password" && currentPath !== "/" && currentPath !== "/reset-password"}
+  {#if currentPath !== "/login" && currentPath !== "/signup" && currentPath !== "/forgot-password" && currentPath !== "/" && currentPath !== "/reset-password" && currentPath != "/finalize-user"}
     <Header {role} />
   {/if}
 
