@@ -31,7 +31,7 @@
 
     try {
       const response = await fetch(
-        `http://localhost:8080/projectElements/uploadElement?projectId=${projectId}&elementTypeId=${elementTypeId}`,
+        `https://269593.kieg.science/api/projectElements/uploadElement?projectId=${projectId}&elementTypeId=${elementTypeId}`,
         {
           method: "POST",
           headers: {
@@ -56,7 +56,7 @@
   onMount(async () => {
     try {
       const response = await fetch(
-        `http://localhost:8080/deadlines/getDeadlineByProjectIdAndElementTypeId?projectId=${projectId}&elementTypeId=${elementTypeId}`,
+        `https://269593.kieg.science/api/deadlines/getDeadlineByProjectIdAndElementTypeId?projectId=${projectId}&elementTypeId=${elementTypeId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`, // Add token for authentication

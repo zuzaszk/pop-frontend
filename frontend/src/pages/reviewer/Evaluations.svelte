@@ -47,7 +47,7 @@
 
   async function fetchEvaluations() {
     try {
-      const url = `http://localhost:8080/evaluations/assignedEvaluateList?userId=${userId}${
+      const url = `https://269593.kieg.science/api/evaluations/assignedEvaluateList?userId=${userId}${
         selectedEditionId ? `&editionId=${selectedEditionId}` : ""
       }`;
       const response = await fetch(url, {
@@ -97,7 +97,7 @@
 
   async function fetchEditions() {
     try {
-      const response = await fetch("http://localhost:8080/editions/listAll", {
+      const response = await fetch("https://269593.kieg.science/api/editions/listAll", {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (response.ok) {

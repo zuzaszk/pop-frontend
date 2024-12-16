@@ -45,7 +45,7 @@
 
   async function fetchReviewerStatistics() {
   try {
-    const url = `http://localhost:8080/statistic/reviewerStatistics`;
+    const url = `https://269593.kieg.science/api/statistic/reviewerStatistics`;
     const response = await fetch(url, {
       headers: { Authorization: `Bearer ${token}` },
     });
@@ -76,7 +76,7 @@
 
   async function fetchStatistics() {
     try {
-      const url = `http://localhost:8080/statistic/getCounts`;
+      const url = `https://269593.kieg.science/api/statistic/getCounts`;
       const response = await fetch(url, {
         headers: { Authorization: `Bearer ${token}` }, 
       });
@@ -96,7 +96,7 @@
 
   async function fetchAverageEvaluationScore() {
     try {
-      const url = `http://localhost:8080/statistic/averageGrades?n=1`;
+      const url = `https://269593.kieg.science/api/statistic/averageGrades?n=1`;
       const response = await fetch(url, {
         headers: { Authorization: `Bearer ${token}` }, 
       });
@@ -116,7 +116,7 @@
   async function fetchChartData() {
     try {
       errorMessage = "";
-      const url = `http://localhost:8080/statistic/topTechnologies`;
+      const url = `https://269593.kieg.science/api/statistic/topTechnologies`;
       const response = await fetch(url, {
         headers: { Authorization: `Bearer ${token}` }, 
       });
@@ -188,7 +188,7 @@
   async function fetchLinearChartData() {
     try {
       linearChartError = "";
-      const url = `http://localhost:8080/statistic/averageGrades?n=${yearsInput}`;
+      const url = `https://269593.kieg.science/api/statistic/averageGrades?n=${yearsInput}`;
       const response = await fetch(url, {
         headers: { Authorization: `Bearer ${token}` },
       });

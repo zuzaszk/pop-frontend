@@ -16,7 +16,7 @@
 
   onMount(async () => {
     try {
-      const response = await fetch("http://localhost:8080/editions/listAll", {
+      const response = await fetch("https://269593.kieg.science/api/editions/listAll", {
         headers: {
           Authorization: `Bearer ${token}`, 
         },
@@ -43,7 +43,7 @@
 
     try {
       const response = await fetch(
-        `http://localhost:8080/project/create?title=${encodeURIComponent(
+        `https://269593.kieg.science/api/project/create?title=${encodeURIComponent(
           projectName
         )}&editionId=${selectedEdition}`,
         {

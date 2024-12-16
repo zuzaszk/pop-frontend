@@ -96,7 +96,7 @@
 
     try {
       const response = await fetch(
-        `http://localhost:8080/project/basicInfo?projectId=${projectId}`,
+        `https://269593.kieg.science/api/project/basicInfo?projectId=${projectId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -141,7 +141,7 @@
 
   try {
     const response = await fetch(
-      `http://localhost:8080/projectElements/retrieve?projectElementId=${posterElement.elementId}`,
+      `https://269593.kieg.science/api/projectElements/retrieve?projectElementId=${posterElement.elementId}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -171,7 +171,7 @@ async function fetchUserRating() {
 
   try {
     const response = await fetch(
-      `http://localhost:8080/evaluations/getEvaluation?projectId=${projectId}&userId=${userId}`,
+      `https://269593.kieg.science/api/evaluations/getEvaluation?projectId=${projectId}&userId=${userId}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -222,7 +222,7 @@ async function fetchUserRating() {
   console.log("Payload being sent:", JSON.stringify(payload));
 
   try {
-    const response = await fetch(`http://localhost:8080/reviews/add`, {
+    const response = await fetch(`https://269593.kieg.science/api/reviews/add`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -279,8 +279,8 @@ async function submitRating() {
       };
 
   const apiUrl = existingRating
-    ? "http://localhost:8080/evaluations/update"
-    : "http://localhost:8080/evaluations/add";
+    ? "https://269593.kieg.science/api/evaluations/update"
+    : "https://269593.kieg.science/api/evaluations/add";
 
   const method = existingRating ? "PUT" : "POST";
 

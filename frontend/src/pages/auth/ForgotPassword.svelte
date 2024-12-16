@@ -17,7 +17,7 @@
       loading = true;
 
       const response = await fetch(
-        "http://localhost:8080/auth/forgot-password",
+        "https://269593.kieg.science/api/auth/forgot-password",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

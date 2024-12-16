@@ -37,7 +37,7 @@
 
     try {
       const response = await fetch(
-        `http://localhost:8080/project/basicInfo?projectId=${projectId}`,
+        `https://269593.kieg.science/api/project/basicInfo?projectId=${projectId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`, 
@@ -90,7 +90,7 @@
 
     try {
       const response = await fetch(
-        "http://localhost:8080/project/saveBasicInfo",
+        "https://269593.kieg.science/api/project/saveBasicInfo",
         {
           method: "PUT",
           headers: {

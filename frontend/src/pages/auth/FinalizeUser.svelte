@@ -56,7 +56,7 @@
     successMessage = "";
 
     const response = await fetch(
-      `http://localhost:8080/usos/finalize-user?token=${encodeURIComponent(
+      `https://269593.kieg.science/api/usos/finalize-user?token=${encodeURIComponent(
         token
       )}&email=${encodeURIComponent(email)}`,
       {

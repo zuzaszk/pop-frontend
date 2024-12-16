@@ -49,7 +49,7 @@
       successMessage = "";
 
       const response = await fetch(
-        "http://localhost:8080/auth/reset-password",
+        "https://269593.kieg.science/api/auth/reset-password",
         {
           method: "POST",
           headers: {

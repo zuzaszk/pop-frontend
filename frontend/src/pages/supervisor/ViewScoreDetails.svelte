@@ -30,8 +30,8 @@
     errorMessage = "";
     try {
       const url = selectedEditionId
-        ? `http://localhost:8080/statistic/evaluationDetails?editionId=${selectedEditionId}`
-        : `http://localhost:8080/statistic/evaluationDetails`;
+        ? `https://269593.kieg.science/api/statistic/evaluationDetails?editionId=${selectedEditionId}`
+        : `https://269593.kieg.science/api/statistic/evaluationDetails`;
 
       const response = await fetch(url, {
         headers: { Authorization: `Bearer ${token}` },
@@ -54,7 +54,7 @@
 
   async function fetchEditions() {
     try {
-      const response = await fetch("http://localhost:8080/editions/listAll", {
+      const response = await fetch("https://269593.kieg.science/api/editions/listAll", {
         headers: { Authorization: `Bearer ${token}` }, // Include token in headers
       });
       if (response.ok) {

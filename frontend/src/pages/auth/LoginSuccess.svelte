@@ -32,7 +32,7 @@
     document.cookie = `authToken=${token}; path=/; max-age=86400;`; // Store the token in cookies
 
     try {
-      const response = await fetch("http://localhost:8080/user/currentUser", {
+      const response = await fetch("https://269593.kieg.science/api/user/currentUser", {
         headers: { Authorization: `Bearer ${token}` },
       });
 

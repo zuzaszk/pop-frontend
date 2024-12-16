@@ -50,7 +50,7 @@
   async function fetchProjectDetails() {
     try {
       const response = await fetch(
-        `http://localhost:8080/project/basicInfo?projectId=${projectId}`,
+        `https://269593.kieg.science/api/project/basicInfo?projectId=${projectId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -77,7 +77,7 @@
   async function previewFile(elementId) {
   try {
     const response = await fetch(
-      `http://localhost:8080/projectElements/retrieve?projectElementId=${elementId}`,
+      `https://269593.kieg.science/api/projectElements/retrieve?projectElementId=${elementId}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -123,7 +123,7 @@
     submittingComment = true;
     try {
       const response = await fetch(
-        `http://localhost:8080/comments/add`,
+        `https://269593.kieg.science/api/comments/add`,
         {
           method: "POST",
           headers: {

@@ -33,7 +33,7 @@
       const queryString = queryParams.length ? `?${queryParams.join("&")}` : "";
 
       const response = await fetch(
-        `http://localhost:8080/zpi/project/listAll${queryString}`
+        `https://269593.kieg.science/api/zpi/project/listAll${queryString}`
       );
 
       if (response.ok) {
@@ -287,7 +287,7 @@
       const queryString = queryParams.length ? `?${queryParams.join("&")}` : "";
 
       const response = await fetch(
-        `http://localhost:8080/project/listAll${queryString}`,
+        `https://269593.kieg.science/api/project/listAll${queryString}`,
         {
           headers: {
             Authorization: `Bearer ${token}`, 
@@ -538,7 +538,7 @@
       const queryString = queryParams.length ? `?${queryParams.join("&")}` : "";
 
       const response = await fetch(
-        `http://localhost:8080/project/listAll${queryString}`,
+        `https://269593.kieg.science/api/project/listAll${queryString}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }

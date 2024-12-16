@@ -47,7 +47,7 @@
     const userId = get(authStore).user.userId;
 
     const response = await fetch(
-      `http://localhost:8080/user/switchRole?userId=${userId}&roleId=${selectedRoleId}`,
+      `https://269593.kieg.science/api/user/switchRole?userId=${userId}&roleId=${selectedRoleId}`,
       {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },

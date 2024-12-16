@@ -40,7 +40,7 @@
   
       try {
         const response = await fetch(
-        `http://localhost:8080/project/basicInfo?projectId=${teamId}`,
+        `https://269593.kieg.science/api/project/basicInfo?projectId=${teamId}`,
         {
           headers: { Authorization: `Bearer ${token}` }, // Pass token
         }
@@ -71,7 +71,7 @@
   
       try {
         const response = await fetch(
-        `http://localhost:8080/projectElements/retrieve?projectElementId=${posterElement.elementId}`,
+        `https://269593.kieg.science/api/projectElements/retrieve?projectElementId=${posterElement.elementId}`,
         {
           headers: { Authorization: `Bearer ${token}` }, // Pass token
         }
@@ -89,7 +89,7 @@
     async function fetchUserEvaluation() {
       try {
         const response = await fetch(
-        `http://localhost:8080/evaluations/getEvaluation?projectId=${teamId}&userId=${userId}`,
+        `https://269593.kieg.science/api/evaluations/getEvaluation?projectId=${teamId}&userId=${userId}`,
         {
           headers: { Authorization: `Bearer ${token}` }, // Pass token
         }
@@ -117,7 +117,7 @@
       submitting = true;
       try {
         const response = await fetch(
-          `http://localhost:8080/evaluations/add`,
+          `https://269593.kieg.science/api/evaluations/add`,
           {
             method: "POST",
             headers: { 
@@ -161,7 +161,7 @@
       removingStudent = true;
       try {
         const response = await fetch(
-        `http://localhost:8080/userRole/removeStudentsFromProject?projectId=${teamId}`,
+        `https://269593.kieg.science/api/userRole/removeStudentsFromProject?projectId=${teamId}`,
         {
           method: "POST",
           headers: { 
@@ -386,7 +386,7 @@
       try {
         console.log("Fetching team details with teamId:", teamId);
         const response = await fetch(
-          `http://localhost:8080/project/basicInfo?projectId=${teamId}`,
+          `https://269593.kieg.science/api/project/basicInfo?projectId=${teamId}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -422,7 +422,7 @@
     removingStudent = true;
     try {
       const response = await fetch(
-        `http://localhost:8080/userRole/removeStudentsFromProject?projectId=${teamId}`,
+        `https://269593.kieg.science/api/userRole/removeStudentsFromProject?projectId=${teamId}`,
         {
           method: "POST",
           headers: {
@@ -456,7 +456,7 @@
   
     try {
       const response = await fetch(
-        `http://localhost:8080/projectElements/retrieve?projectElementId=${posterElement.elementId}`,
+        `https://269593.kieg.science/api/projectElements/retrieve?projectElementId=${posterElement.elementId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -478,7 +478,7 @@
   async function fetchUserRating() {
     try {
       const response = await fetch(
-        `http://localhost:8080/evaluations/getEvaluation?projectId=${teamId}&userId=${userId}`,
+        `https://269593.kieg.science/api/evaluations/getEvaluation?projectId=${teamId}&userId=${userId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -531,8 +531,8 @@
     // const hasReviewed = existingEvaluation && existingEvaluation.score !== null && existingEvaluation.comment.trim() !== "";
   
     const apiUrl = isEvaluationComplete
-        ? `http://localhost:8080/evaluations/update`
-        : `http://localhost:8080/evaluations/add`;
+        ? `https://269593.kieg.science/api/evaluations/update`
+        : `https://269593.kieg.science/api/evaluations/add`;
   
   
     // const method = hasReviewed ? "PUT" : "POST";
