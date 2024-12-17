@@ -139,7 +139,6 @@
 </div>
 
 <style>
-  .flex {
-    background-color: #f9fafb;
-  }
+  @import "../../styles/pages/auth/ResetPassword.css";
 </style>
+

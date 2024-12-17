@@ -10,6 +10,7 @@
   let successMessage = "";
   let loading = false;
 
+  // Extract the token from the URL on page load
   onMount(() => {
   const hash = window.location.hash; // Extracts everything after '#'
   const query = hash.startsWith("#/finalize-user?")
@@ -39,6 +40,7 @@
     }
   }
 
+  // Finalize the user registration with the provided token and email
   async function finalizeUser() {
   if (!email.trim()) {
     errorMessage = "Email is required.";
@@ -119,14 +121,16 @@
 
 </script>
 
-
+<!-- Page Content -->
 <div
   class="flex items-center justify-center w-screen min-h-screen bg-cover bg-center bg-no-repeat relative bg-[url('../pwr4.JPG')]"
 >
+<!-- Background Gradient Overlay -->
   <div
     class="absolute inset-0 bg-gradient-to-r from-black via-transparent to-black opacity-50"
   ></div>
 
+  <!-- Card Container -->
   <div
     class="relative z-10 w-full max-w-lg p-10 bg-white bg-opacity-90 rounded-lg shadow-lg transform scale-75 origin-center"
   >
@@ -137,6 +141,8 @@
       Enter your email to link your USOS account.
     </p>
 
+
+    <!-- Display error or success messages -->
     {#if errorMessage}
       <div class="bg-red-100 text-red-800 p-3 rounded mb-4 text-center">{errorMessage}</div>
     {/if}
@@ -145,6 +151,7 @@
       <div class="bg-green-100 text-green-800 p-3 rounded mb-4 text-center">{successMessage}</div>
     {/if}
 
+    <!-- Form Inputs -->
     <div class="flex flex-col space-y-4">
       <input
         type="email"
@@ -168,57 +175,5 @@
 </div>
 
 <style>
-  .flex {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  .min-h-screen {
-    min-height: 100vh;
-  }
-  .bg-gray-100 {
-    background-color: #f7fafc;
-  }
-  .bg-white {
-    background-color: #fff;
-  }
-  .text-gray-800 {
-    color: #2d3748;
-  }
-  .text-gray-600 {
-    color: #718096;
-  }
-  .text-red-800 {
-    color: #c53030;
-  }
-  .text-green-800 {
-    color: #2f855a;
-  }
-  .bg-red-100 {
-    background-color: #fff5f5;
-  }
-  .bg-green-100 {
-    background-color: #f0fff4;
-  }
-  .bg-blue-500 {
-    background-color: #4299e1;
-  }
-  .hover\:bg-blue-600:hover {
-    background-color: #3182ce;
-  }
-  .disabled\:opacity-50:disabled {
-    opacity: 0.5;
-  }
-  .p-8 {
-    padding: 2rem;
-  }
-  .rounded {
-    border-radius: 0.375rem;
-  }
-  .rounded-lg {
-    border-radius: 0.5rem;
-  }
-  .max-w-md {
-    max-width: 28rem;
-  }
+  @import "../../styles/pages/auth/FinalizeUser.css";
 </style>

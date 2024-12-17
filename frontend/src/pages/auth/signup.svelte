@@ -1,5 +1,5 @@
 <script>
-  import SignupForm from "../../components/SignupForm.svelte";
+  import SignupForm from "../../components/auth/SignupForm.svelte"; 
   import { push } from "svelte-spa-router";
 
   let loading = false;
@@ -78,22 +78,5 @@
 </div>
 
 <style>
-  div {
-    font-family: Arial, sans-serif;
-  }
-
-  .scaleContainer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .scaleContainer .transform {
-    transform: scale(0.65);
-    transform-origin: center;
-  }
-
-  a {
-    cursor: pointer;
-  }
+  @import "../../styles/pages/auth/Signup.css";
 </style>

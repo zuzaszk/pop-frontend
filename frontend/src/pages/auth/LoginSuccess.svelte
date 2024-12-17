@@ -4,7 +4,7 @@
     import { setUser } from "../../stores/authStore";
     import { get } from "svelte/store";
     import { authStore } from "../../stores/authStore";
-
+    // import { fetchCurrentUser } from "../../utils/authUtils";
 
   
     function mapRole(userRoles) {
@@ -30,6 +30,7 @@
 
   if (token) {
     document.cookie = `authToken=${token}; path=/; max-age=86400;`; // Store the token in cookies
+    
 
     try {
       const response = await fetch("http://localhost:8080/user/currentUser", {

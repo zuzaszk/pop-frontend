@@ -1,0 +1,20 @@
+.scaleContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* .scaleContainer .transform {
+    transform: scale(0.7);
+    transform-origin: center;
+  } */
+
+  a {
+    cursor: pointer;
+  }
+
+  @media (min-width: 2500px) {
+    .scaleContainer .transform {
+      transform: scale(1.1);
+    }
+  }

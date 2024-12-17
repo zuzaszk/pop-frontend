@@ -239,7 +239,7 @@
     color: #374151;
   }
 
-  @media (min-width: 1600px) {
+  @media (min-width: 2000px) {
     .container {
       max-width: 60%;
       margin-top: 150px;

@@ -718,7 +718,7 @@
     fill: currentColor;
   }
 
-  @media (min-width: 1600px) {
+  @media (min-width: 2000px) {
     .container {
       max-width: 2200px;
     }

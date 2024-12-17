@@ -1,8 +1,8 @@
 <script>
-  import { push } from "svelte-spa-router";
-  import LoginForm from "../../components/LoginForm.svelte";
-  import SocialLogin from "../../components/SocialLogin.svelte";
-  import UsosLogin from "../../components/UsosLogin.svelte";
+  import { fetchCurrentUser } from "../../utils/authUtils";  import { push } from "svelte-spa-router";
+  import LoginForm from "../../components/auth/LoginForm.svelte";
+  import SocialLogin from "../../components/auth/SocialLogin.svelte";
+  import UsosLogin from "../../components/auth/UsosLogin.svelte";
   import { authStore } from "../../stores/authStore";
 
   let email = "";
@@ -11,64 +11,6 @@
   let loading = false;
   
 
-  function mapRole(roleId) {
-    switch (roleId) {
-      case 1:
-        return "student";
-      case 2:
-        return "supervisor";
-      case 3:
-        return "reviewer";
-      case 4:
-        return "chair";
-      case 5:
-        return "spectator"; 
-      default:
-        return "unknown";
-    }
-  }
-
-  // Fetch current user information using the token
-  async function fetchCurrentUser(token) {
-    try {
-      const userResponse = await fetch("http://localhost:8080/user/currentUser", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      if (userResponse.ok) {
-        const userData = await userResponse.json();
-        const role = mapRole(userData.userRole[0]?.roleId);
-
-        // Store token in cookies
-        document.cookie = `authToken=${token}; path=/; max-age=86400;`; // Token expires in 1 day
-
-        // Update authStore
-        authStore.set({
-          token,
-          user: userData,
-          role,
-          isAuthenticated: true,
-        });
-
-        // Redirect based on role
-        const dashboardRoutes = {
-          student: "/student-dashboard",
-          supervisor: "/supervisor-dashboard",
-          reviewer: "/reviewer-dashboard",
-          chair: "/chair-dashboard",
-          spectator: "/projects",
-        };
-
-        push(dashboardRoutes[role] || "/projects");
-      } else {
-        errorMessage = "Failed to fetch user data.";
-        console.error("Failed to fetch user details:", userResponse.statusText);
-      }
-    } catch (error) {
-      errorMessage = "Error fetching user data.";
-      console.error("Error during user data fetch:", error);
-    }
-  }
 
   // Login using email and password
   async function loginWithEmail() {
@@ -89,7 +31,7 @@
       const data = await response.json();
 
       if (response.ok) {
-        await fetchCurrentUser(data.token); // Fetch user details and handle token
+        await fetchCurrentUser(data.token, authStore, push); // Fetch user details and handle token
       } else {
         errorMessage = data.message || "Login failed. Please try again.";
         console.error("Login failed:", response.statusText);
@@ -202,25 +144,7 @@
   </div>
 </div>
 
+
 <style>
-  .scaleContainer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .scaleContainer .transform {
-    transform: scale(0.7);
-    transform-origin: center;
-  }
-
-  a {
-    cursor: pointer;
-  }
-
-  @media (min-width: 1600px) {
-    .scaleContainer .transform {
-      transform: scale(1.1);
-    }
-  }
+  @import "../../styles/pages/auth/Login.css";
 </style>

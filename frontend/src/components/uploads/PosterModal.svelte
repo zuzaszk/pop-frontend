@@ -6,14 +6,19 @@
   import { authStore } from "../../stores/authStore";
 
 
+  // Event dispatcher to communicate with parent components
   const dispatch = createEventDispatcher();
 
+  // State variables for deadlines and authentication
   let softDeadline = "";
   let hardDeadline = "";
-
   let projectId;
   let token;
+
+  // Unique identifier for "Poster" upload
   const elementTypeId = 5; 
+
+  // Reactive declaration: Fetch projectId and authentication token
   $: {
     projectId = get(currentProjectId);
     const auth = get(authStore);
@@ -21,10 +26,17 @@
   }
 
 
+  /**
+   * Close the modal.
+   */
   function onClose() {
     dispatch("close");
   }
 
+/**
+   * Upload the selected file to the backend.
+   * @param {CustomEvent} event - Event containing the file to upload
+   */
   async function onUpload(event) {
     const file = event.detail.file;
 
@@ -37,7 +49,7 @@
         {
           method: "POST",
           headers: {
-            Authorization: `Bearer ${token}`, // Add token for authentication
+            Authorization: `Bearer ${token}`, 
           },
           body: formData,
         }
@@ -61,7 +73,7 @@
         `http://localhost:8080/deadlines/getDeadlineByProjectIdAndElementTypeId?projectId=${projectId}&elementTypeId=${elementTypeId}`,
         {
           headers: {
-            Authorization: `Bearer ${token}`, // Add token for authentication
+            Authorization: `Bearer ${token}`, 
           },
         }
       );

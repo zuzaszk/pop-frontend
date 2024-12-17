@@ -1,11 +1,15 @@
 <script>
+  // Props passed to the component
   export let loginWithEmail;
   export let email;
   export let password;
   export let loading = false;
 </script>
 
-<form on:submit|preventDefault={loginWithEmail} class="mt-6 w-full">
+<!-- Login Form -->
+<form on:submit|preventDefault={loginWithEmail} 
+class="mt-6 w-full">
+ <!-- Email Input -->
   <input
     type="email"
     placeholder="Email"
@@ -14,6 +18,7 @@
     required
   />
 
+  <!-- Password Input -->
   <input
     type="password"
     placeholder="Password"

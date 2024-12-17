@@ -6,25 +6,37 @@
   import { authStore } from "../../stores/authStore";
 
 
+  // Event dispatcher to communicate with parent components
   const dispatch = createEventDispatcher();
 
+  // State variables for deadlines and authentication
   let softDeadline = "";
   let hardDeadline = "";
 
   let projectId;
   let token;
+
+  // Reactive declaration: Fetch projectId and authentication token
   $: {
     projectId = get(currentProjectId);
     const auth = get(authStore);
     token = auth?.token || null;
   }
 
-  const elementTypeId = 8; // Specific element type for the abstract
+  // Fixed elementTypeId for abstract uploads
+  const elementTypeId = 8; 
 
+  /**
+   * Handle modal close event.
+   */
   function onClose() {
     dispatch("close");
   }
 
+  /**
+   * Handle file upload.
+   * @param {CustomEvent} event - Event containing the selected file.
+   */
   async function onUpload(event) {
     const file = event.detail.file;
 
@@ -32,13 +44,13 @@
     formData.append("file", file);
 
     try {
-      // Include projectId and elementTypeId as query parameters
+      // Send file upload request to backend
       const response = await fetch(
         `http://localhost:8080/projectElements/uploadElement?projectId=${projectId}&elementTypeId=${elementTypeId}`,
         {
           method: "POST",
            headers: {
-            Authorization: `Bearer ${token}`, // Add token for authentication
+            Authorization: `Bearer ${token}`, // Include token for authentication
           },
           body: formData,
         }
@@ -46,7 +58,7 @@
 
       if (response.ok) {
         console.log("File uploaded successfully for Abstract");
-        dispatch("upload", { success: true });
+        dispatch("upload", { success: true }); // Notify parent of success
         onClose();
       } else {
         console.error("Failed to upload file");
@@ -56,13 +68,16 @@
     }
   }
 
+  /**
+   * Fetch soft and hard deadlines on component mount.
+   */
   onMount(async () => {
     try {
       const response = await fetch(
         `http://localhost:8080/deadlines/getDeadlineByProjectIdAndElementTypeId?projectId=${projectId}&elementTypeId=${elementTypeId}`,
       {
           headers: {
-            Authorization: `Bearer ${token}`, // Add token for authentication
+            Authorization: `Bearer ${token}`, // Include token for authentication
           },
         }
       );

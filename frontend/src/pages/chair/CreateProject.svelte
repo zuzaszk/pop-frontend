@@ -179,7 +179,7 @@
     }
   }
 
-  @media (min-width: 1600px) {
+  @media (min-width: 2000px) {
     .container {
       transform: scale(1.1);
     }
